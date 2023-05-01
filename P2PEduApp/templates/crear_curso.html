@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+    <title>Crear Curso</title>
+</head>
+<body>
+    <div class="nav">
+        <input type="checkbox" id="nav-check">
+        <div class="nav-header">
+          <div class="nav-title">
+            <img src="" alt="Logo">
+          </div>
+        </div>
+        <div class="nav-btn">
+          <label for="nav-check">
+            <span></span>
+            <span></span>
+            <span></span>
+          </label>
+        </div>
+        
+        <div class="nav-links">
+         <div class="text">
+            {{ user.carne }}
+            <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 2rem; ">
+         </div>
+          
+        </div>
+    </div>
+    <main>
+      <section class="title">
+        <h1>Crear Curso</h1>
+
+        <form action="{% url 'registrar_curso'%}" method="post">
+            {% csrf_token %}
+            <label> Nombre del Curso: </label>
+            <input type="text" id="nombre_curso" name="nombre_curso">
+            <label> Grupo: </label>
+            <input type="text" id="grupo_curso" name="grupo_curso">
+            <label> Carrera: </label>
+            <input type="text" id="carrera_curso" name="carrera_curso">
+            <label> Al crear el curso se le asignara un Token, con este token podra invitar a usuarios a unirse a este curso. </label>
+            <label> Debido a que creaste el curso seras asignado como Votan de manera automatica. </label>
+            <input type="hidden" name="votan_curso" value="{{user.carne}}">
+            
+          <button type="submit" style="margin-right: 10;">
+              
+              Crear Curso
+          </button>
+        </form>
+      </section>
+    </main>
+   
+</body>
+</html>

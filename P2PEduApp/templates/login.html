@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar</title>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+</head>
+<body>
+    <main>
+        <section style="text-align: center;">
+            <h1>Pagina de Login</h1>
+            <form action="{% url 'welcome' %}" method="get">
+                <button type="submit">Ir a login</button>
+            </form>
+
+            <form action="{% url 'home'%}" method="post">
+                {% csrf_token %}
+                <label for="Nombre: ">Nombre:</label>
+                <input type="text" id="nombre" name="nombre"><br>
+                <button>Ingresar</button>
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>

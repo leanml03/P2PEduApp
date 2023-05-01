@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+</head>
+<body>
+
+        <div class="nav">
+            <input type="checkbox" id="nav-check">
+            <div class="nav-header">
+              <div class="nav-title">
+                <img src="" alt="Logo">
+              </div>
+            </div>
+            <div class="nav-btn">
+              <label for="nav-check">
+                <span></span>
+                <span></span>
+                <span></span>
+              </label>
+            </div>
+            
+            <div class="nav-links">
+             <div class="text">
+                <img src="" alt="Icon">
+             </div>
+              <a href="#" target="_blank">Registrarse</a>
+    
+              <button class="boton">
+                Importar Usuario
+              </button>
+              
+            </div>
+        </div>
+
+
+        <main>
+            <section class="welcome_container">
+                <h1 style="color:#2D459B">Bienvenido a P2PEduApp</h1>
+                <img src="{% static 'images/' %}{{ image_name }}"alt="Icon" style="width: 100px;">
+                <span class="text">
+                    {% if user.name %}
+                    {{ user.name }}
+                    {% endif %}
+                </span>
+                <span class="text">
+                    {% if user.name %}
+                    {{ user.carne }}
+                    {% endif %}
+                </span>
+                <form style="margin-right: 10;" action="{% url 'home'%}" method="post">
+                    <button type="submit" class="boton">
+                        {% csrf_token %}
+                        Ingresar
+                    </button>
+                </form>
+                
+                  
+            </section>
+
+
+        </main>
+
+</body>
+</html>

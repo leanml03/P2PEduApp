@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+    <title>Inicio</title>
+</head>
+<body>
+    <div class="nav">
+        <input type="checkbox" id="nav-check">
+        <div class="nav-header">
+          <div class="nav-title">
+            <img src="" alt="Logo">
+          </div>
+        </div>
+        <div class="nav-btn">
+          <label for="nav-check">
+            <span></span>
+            <span></span>
+            <span></span>
+          </label>
+        </div>
+        
+        <div class="nav-links">
+         <div class="text">
+            {{ user.carne }}
+            <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 2rem; ">
+         </div>
+         
+          <a href="crear_curso" target="_blank">Crear Curso</a>
+
+          <button class="boton">
+            Exportar Usuario
+          </button>
+          
+        </div>
+    </div>
+    <main>
+      <section class="title">
+        <h1>Bienvenido 
+        {% if user.name %}
+        {{ user.name }}!</p>
+        {% endif %}</h1>
+
+        <form action="{% url 'home'%}" method="post">
+          <button type="submit" style="margin-right: 10;">
+              {% csrf_token %}
+              Sincronizar Cursos
+          </button>
+        </form>
+      </section>
+      
+      <section class="home">
+        <div class="course_container">
+          
+          
+
+          <form action="{% url 'curso'%}" method="post">
+            {% csrf_token %}
+            {% for clave, valor in datos.items %}
+            <button type="submit" name="token" value="{{ valor.token_curso }}">
+              <div class="course_box">
+                <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="150" height="150" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+                  <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+                </svg>
+                <span>{{ valor.nombre_curso }}</span>
+                
+              </div>
+            </button>
+            {% endfor %}
+          
+          </form>
+  
+        </div>
+      </section>
+      
+    </main>
+   
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso</title>
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+</head>
+<body>
+    <header>
+      <div id="carnet">{{user.name}}</div>
+      <div id="carnet">{{user.carne}}</div>
+      <div id="carnet">{{nombre}}</div>
+    </header>
+    
+    <section>
+      <nav>
+        <a href="sync_data">Sincronizar</a>
+        <ul>
+          <li><a href="crear_foro">Crear Foro</a></li>
+          <li><a href="">Exportar Curso</a></li>
+        </ul>
+      </nav>
+      
+      <article>
+        <h2>foros Disponibles:</h2>
+        <div>
+          {% for clave, valor in datos.items %}
+          <section class="forum_select">
+            <div class="forum_box">
+              
+              <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="150" height="150" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+                <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+              </svg>
+              <span>{{ valor.name }}</span>
+            </div>
+          </section>  
+          {% endfor %}
+        </div>
+        <br></br>
+    
+
+    </body>
+</html>
