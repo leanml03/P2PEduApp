@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Evaluacion</title>
+    {% load static %}      
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#";">Votan</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Crear Curso</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              {% csrf_token %}
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link">{{ user.carne }}
+                  <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+                </a>
+                </li>
+                <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button></li>
+              </ul>
+              
+            </form>
+          </div>
+        </div>
+      </nav>
+      <main>
+        {% if mensaje%}
+        <div class="alert alert-success">
+          {{ mensaje }}
+        </div>
+        {%endif%}
+        <div class="row justify-content-center">
+          <div class="col-md-6" style="display: block; margin-left: 3rem;">
+            <h1>Crear Evaluacíon</h1>
+            <span>Se va a crear una evaluacion para el siguiente curso</span>
+            <form action="{% url 'crear_eval'%}" method="post">
+              {% csrf_token %}
+              <input style="display: block;" id="token" name="token" value="{{token}}" hidden></input>
+              <span style="font-weight: bold; display: block;">Nombre de la evaluación</span>
+              <input type="text" id="nombre_eval" name="nombre_eval">
+              <span style="font-weight: bold; display: block;">Porcentaje de la evaluacion</span>
+              <span id="range-value" name="range-value"></span>
+              <label for="customRange3" class="form-label">%</label>
+               
+              <input style="width: 20rem;" type="range" class="form-range" min="0" max="100" step="1" id="customRange3" >
+             
+              <script>
+                const range = document.querySelector('#customRange3');
+                const rangeValue = document.querySelector('#range-value');
+
+                range.addEventListener('input', () => {
+                  rangeValue.textContent = range.value;
+                });
+              </script>
+              <span style="font-weight: bold; display: block;">Fecha de entrega</span>
+              <label for="fecha">Fecha:</label>
+              <input style="width: 10rem;" type="date" id="fecha" name="fecha" class="form-control">
+
+              <span style="font-weight: bold; display: block;">Detalles de la entrega</span>
+              <textarea type="text" style="height: 10rem; width: 30rem;" id="detalles" name="detalles"></textarea>`
+
+              <span for="archivo" style="font-weight: bold; display: block;" >Subir archivo:</span>
+              <input type="file" id="archivo" name="archivo" class="form-control-file">
+              <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Crear Evaluacion</button>
+            </form>
+          </div>
+          
+
+        </div>
+        
+
+      </main>
+</body>
+</html>

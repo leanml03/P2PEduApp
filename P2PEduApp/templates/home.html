@@ -53,12 +53,26 @@
         <div class="col"></div>
         <div class="col-md-6">
             <div class="courses">
-              <h1 style="font-size: larger;">Cursos Matriculados</h1>
+              <div>
+                <h1 style="font-size: larger;">Cursos Matriculados</h1>
+                <ul>
+                  
+                  <form action="{% url 'home'%}" method="post">
+                    <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">
+                        {% csrf_token %}
+                        Sincronizar Cursos
+                    </button>
+                  </form>
+                </ul>
+                
+              </div>
+              
+              
               <form action="{% url 'curso'%}" method="post">
                 {% csrf_token %}
                 {% for clave, valor in datos.items %}
               
-                  <button type="button" class="course_box"">
+                  <button type="submit" class="course_box" name="token" value="{{ valor.token_curso }}">
                     <div class="content">
                       <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="120" height="120" viewBox="1 1 22 20" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>

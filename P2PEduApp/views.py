@@ -1,7 +1,7 @@
 import os
 import json
 import hashlib
-
+from django.contrib import messages
 from django.shortcuts import render, redirect
 #Importacion de los scripts de models (Manipulacion de los JSON)
 from P2PEduApp.models import *
@@ -37,7 +37,7 @@ def curso(request): #Pagina de Curso
 			print(valor)
 			curso=valor
 			break
-	return render(request,'curso.html',{"curso":curso, "usuario":usuario}) #se manda el curso que hemos seleccionado
+	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token}) #se manda el curso que hemos seleccionado
 
 
 
@@ -89,3 +89,163 @@ def cargar_archivo(request):
 				f.write(chunk)
 		return render(request, 'cargar_archivo.html')
 	return render(request, 'cargar_archivo.html')
+
+def crear_eval(request):
+	token = request.GET.get('token')
+	if request.method=='POST':
+		nombre_eval=request.POST.get('nombre_eval')
+		porcentaje=request.POST.get('range-value')
+		fecha=request.POST.get('fecha')
+		detalles=request.POST.get('detalles')
+		archivo=request.POST.get('archivo')
+		tokenCourse=request.POST.get('token')
+
+		# Crear la carpeta de evaluaciones si no existe
+		evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', tokenCourse,'evaluaciones')
+		if not os.path.exists(evaluaciones_dir):
+			os.makedirs(evaluaciones_dir)
+		
+			# Crear el archivo JSON y guardarlo en la carpeta de evaluaciones
+		evaluacion = {
+			'nombre': nombre_eval,
+			'porcentaje': porcentaje,
+			'fecha': fecha,
+			'detalles': detalles,
+			'calificaciones':{}
+		}
+		evaluacion_file = os.path.join(evaluaciones_dir, f'{nombre_eval}.json')
+		with open(evaluacion_file, 'w') as f:
+			json.dump(evaluacion, f)
+
+		
+
+
+
+
+
+		
+		mensaje="La evaluacion se ha creado satisfactoriamente"
+		return render(request, 'crear_eval.html',{'mensaje':mensaje,'token':tokenCourse})
+	else:
+		return render(request, 'crear_eval.html',{'token':token})
+
+def calificar_eval(request):
+	token = request.GET.get('token')
+	# Obtener la lista de evaluaciones
+
+	datos = load_courses() # Se obtienen los datos de todos los cursos
+	usuario=load_profile # Se carga el perfil de usuario actual conectado
+
+	for clave, valor in datos.items(): # Se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
+		if valor['token_curso'] == token:
+			curso=valor
+			break
+
+	evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', token, 'evaluaciones')
+	evaluaciones = []
+	for filename in os.listdir(evaluaciones_dir):
+		if filename.endswith('.json'):
+			with open(os.path.join(evaluaciones_dir, filename)) as f:
+				evaluacion = json.load(f)
+				evaluaciones.append(evaluacion)
+
+	return render(request, 'calificar_eval.html', {"curso":curso, "token":token, "evaluaciones":evaluaciones})
+def cal_eval_notas(request):
+	if request.method == 'POST':
+		if request.POST.get('estudiante'):
+			token = request.POST.get('token')
+			curso = request.POST.get('curso')
+			estudiante = request.POST.get('estudiante')
+			#evaluacion = json.loads(request.POST.get('evaluacion').replace("\'", "\""))
+			nota = int(request.POST.get('nota'))
+			evaluacion_name=request.POST.get('evaluacion')
+			#Acceder al JSON de la evaluacion
+			evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
+			for filename in os.listdir(evaluaciones_dir):
+				if filename.endswith('.json') and filename.split('.')[0] == evaluacion_name:
+					with open(os.path.join(evaluaciones_dir, filename)) as f:
+						evaluacion = json.load(f)
+						break
+			if(nota>100 or nota<0):
+				#Mensaje de rechazo a la peticion
+				mensaje="La calificacion no se ha asignado debido a que los valores estan fuera de los rangos"
+				#Reenvio de la evaluacion y el mensaje
+				return render(request,'cal_eval_notas.html',{"evaluacion":evaluacion,"mensaje":mensaje,"token":token})
+			else:
+				# Actualizar la calificación del estudiante en el diccionario de calificaciones de la evaluación		
+				evaluacion['calificaciones'][estudiante] = nota
+				# Escribir el diccionario de evaluación actualizado en el archivo JSON correspondiente
+				evaluacion_path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones', evaluacion_name + '.json')
+				with open(evaluacion_path, 'w') as f:
+					json.dump(evaluacion, f)
+			
+				#Mensaje de exito
+				mensaje="La calificacion del estudiante",estudiante,"se ha modificado correctamente."
+				# Redirigir al usuario a la página de detalles de la evaluación
+				return render(request,'cal_eval_notas.html',{"evaluacion":evaluacion,"mensaje":mensaje,"token":token})
+		else:
+			# Si la petición no es POST, redirigir al usuario a la página de inicio
+			#carga del curso especifico y la evaluacion especifica
+			token = request.POST.get('token')
+			evaluacion_name=request.POST.get('evaluacion')
+			print(token)
+			evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
+			for filename in os.listdir(evaluaciones_dir):
+				if filename.endswith('.json') and filename.split('.')[0] == evaluacion_name:
+					with open(os.path.join(evaluaciones_dir, filename)) as f:
+						evaluacion = json.load(f)
+						break
+					
+			return render(request,'cal_eval_notas.html',{"evaluacion":evaluacion,"token":token})
+def evaluaciones(request):
+	#Se carga el usuario
+	usuario=load_profile
+	#Se carga el token del curso
+	if not request.method=='POST': 
+		token = request.GET.get('token')
+	else:
+		token=request.POST.get('token')
+	
+	#Se obtiene la direccion de la ubicacion de las evaluaciones
+	evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
+	#Se verifica si hay evaluaciones en el curso
+	if not os.path.exists(evaluaciones_dir):
+		# si no se encuentra el folder de evaluaciones, se muestra un mensaje de error
+		return render(request, 'curso.html', {'mensaje': 'El curso no tiene evaluaciones'})
+	#Se cargan todas las evaluaciones y se almacenan en el arreglo
+	evaluaciones = []
+	#Se recorre los archivos para verificar las evaluaciones y agregarlas al arreglo
+	for filename in os.listdir(evaluaciones_dir):
+		if filename.endswith('.json'):
+			with open(os.path.join(evaluaciones_dir, filename)) as f:
+				evaluacion = json.load(f)
+				evaluaciones.append(evaluacion)
+
+
+	#Si el metodo es post se hace el registro del archivo subido
+	if request.method == 'POST':
+		archivo = request.FILES['archivo']
+		evaluacion_name = request.POST.get('evaluacion') 
+		userCarne=request.POST.get('user')
+		#Esta es la ubicacion de la carpeta de archivos de la evaluacion
+		evaluacion_path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones', evaluacion_name , 'files',userCarne)
+		os.makedirs(evaluacion_path, exist_ok=True) #Verifica si la carpeta ya se encuentra
+		with open(os.path.join(evaluacion_path, archivo.name), 'wb+') as destination:
+			for chunk in archivo.chunks():
+				destination.write(chunk)	
+		#Ahora se abre el archivo JSON para modificar su interior
+		for filename in os.listdir(evaluaciones_dir):
+			if filename.endswith('.json') and filename==evaluacion_name+".json":
+				with open(os.path.join(evaluaciones_dir, filename)) as f:
+					eval = json.load(f)
+		registro_entrega={userCarne:None}
+		eval['calificaciones'].update(registro_entrega)
+		
+		evaluacion_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name+'.json')
+		with open(evaluacion_dir, 'w') as f:
+			json.dump(eval, f)
+		mensaje="Se ha subido el archivo a la evaluacion. "
+		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token,'mensaje':mensaje})
+	else:
+		
+		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token})

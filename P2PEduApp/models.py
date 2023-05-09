@@ -62,3 +62,5 @@ def get_random_image():
     img_path = os.path.join(img_dir, img_name)
     return img_path, img_name
 
+
+

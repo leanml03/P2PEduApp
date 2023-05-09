@@ -32,11 +32,13 @@
         
       {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
       <a href="upload" target="_blank">Reportes</a>
-      <a href="upload" target="_blank">Asignaciones</a>
+      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
       <a href="cargar_archivo" target="_blank">Material</a>
       <a href="crear_foro" target="_blank">Crear Foro</a>
       {% else %}
-      <a href="upload" target="_blank">Calificaciones</a>
+      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+      <a href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
+      <a href="{% url 'calificar_eval' %}?token={{ token }}">Calificar Evaluación</a>
       {% endif %}
         
 
@@ -56,7 +58,11 @@
       <div id="carnet">Nombre del Curso: {{curso.nombre_curso}}</div>
       {{curso.votan}}
     </header>
-    
+    {% if mensaje%}
+      <div class="alert alert-info">
+        {{ mensaje }}
+      </div>
+    {%endif%}
     <section>
       <nav>
         <a href="sync_data">Sincronizar</a>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificar Evaluacion</title>
+    {% load static %}  
+    
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
+
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#";">Votan</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Crear Curso</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link">{{ user.carne }}
+                  <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+                </a>
+                </li>
+                <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button></li>
+              </ul>
+              
+            </form>
+          </div>
+        </div>
+      </nav>
+      <main>
+        <div class="row justify-content-center">
+            <div class="col-md-6" style="margin-left: 5rem;">
+              <h1>Calificar Evaluación</h1>
+              <h2 style="font-size: larger;">Curso: {{curso.nombre_curso}}</h2>
+              <form method="POST" action="{% url 'cal_eval_notas' %}">
+                {% csrf_token %}
+                  <select name="evaluacion" class="form-select" aria-label="Default select example" style="width: 20rem;">
+                    {% for evaluacion in evaluaciones %}
+                      <option value="{{ evaluacion.nombre }}">{{ evaluacion.nombre }}</option>
+                    {% endfor %}
+                    
+                  </select>
+                  <input name="curso" value="{{curso}}" hidden>
+                  <input name="token" value="{{token}}" hidden>
+                  <button type="submit"  class="btn btn-outline-success" style="background-color: #A0FE73; border-color: #A0FE73; margin-top: 1rem;">Buscar</button>
+
+              </form>
+            </div>
+          </div>
+          
+      </main>
+</body>
+</html>
