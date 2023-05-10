@@ -30,5 +30,9 @@ urlpatterns = [
     path('crear_eval',crear_eval, name='crear_eval'),
     path('calificar_eval',calificar_eval,name='calificar_eval'),
     path('cal_eval_notas',cal_eval_notas,name='cal_eval_notas'),
-    path('evaluaciones',evaluaciones,name='evaluaciones')
+    path('evaluaciones',evaluaciones,name='evaluaciones'),
+    path('gestor_archivos',gestor_archivos,name='gestor_archivos'),
+    path('archivos_Cursos',archivos_Cursos,name='archivos_Cursos'),
+    path('descargar_archivos',descargar_archivos,name='descargar_archivos'),
+
 ]

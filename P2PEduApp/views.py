@@ -224,28 +224,75 @@ def evaluaciones(request):
 
 	#Si el metodo es post se hace el registro del archivo subido
 	if request.method == 'POST':
-		archivo = request.FILES['archivo']
+		try:
+			archivo = request.FILES['archivo']
+			archivoUploaded=True
+		except:
+			mensaje="No se ha seleccionado ningun archivo para subir a la evaluacion"
+			archivoUploaded=False
+		
 		evaluacion_name = request.POST.get('evaluacion') 
 		userCarne=request.POST.get('user')
 		#Esta es la ubicacion de la carpeta de archivos de la evaluacion
 		evaluacion_path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones', evaluacion_name , 'files',userCarne)
 		os.makedirs(evaluacion_path, exist_ok=True) #Verifica si la carpeta ya se encuentra
-		with open(os.path.join(evaluacion_path, archivo.name), 'wb+') as destination:
-			for chunk in archivo.chunks():
-				destination.write(chunk)	
-		#Ahora se abre el archivo JSON para modificar su interior
-		for filename in os.listdir(evaluaciones_dir):
-			if filename.endswith('.json') and filename==evaluacion_name+".json":
-				with open(os.path.join(evaluaciones_dir, filename)) as f:
-					eval = json.load(f)
-		registro_entrega={userCarne:None}
-		eval['calificaciones'].update(registro_entrega)
-		
-		evaluacion_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name+'.json')
-		with open(evaluacion_dir, 'w') as f:
-			json.dump(eval, f)
-		mensaje="Se ha subido el archivo a la evaluacion. "
+		if(archivoUploaded):
+			with open(os.path.join(evaluacion_path, archivo.name), 'wb+') as destination:
+				for chunk in archivo.chunks():
+					destination.write(chunk)	
+			#Ahora se abre el archivo JSON para modificar su interior
+			for filename in os.listdir(evaluaciones_dir):
+				if filename.endswith('.json') and filename==evaluacion_name+".json":
+					with open(os.path.join(evaluaciones_dir, filename)) as f:
+						eval = json.load(f)
+			registro_entrega={userCarne:None}
+			eval['calificaciones'].update(registro_entrega)
+			
+			evaluacion_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name+'.json')
+			with open(evaluacion_dir, 'w') as f:
+				json.dump(eval, f)
+			mensaje="Se ha subido el archivo a la evaluacion. "
 		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token,'mensaje':mensaje})
 	else:
 		
 		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token})
+def gestor_archivos(request):
+	token = request.GET.get('token')
+	evaluacion_name = request.GET.get('evaluacion')
+	
+	path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name,'files')  # aquí debes colocar la ruta a la carpeta que quieres mostrar
+	 
+	evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
+	return render(request,"gestor_archivos.html",{'token':token,'evaluacion':evaluacion})
+import glob
+def archivos_Cursos(request):
+	token = request.GET.get('token')
+	print(token)
+	path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'files', '**', '*')
+
+	filepaths = []
+	for filepath in glob.glob(path, recursive=True):
+		filepaths.append(filepath)
+
+	return render(request, "archivos_Cursos.html", {'filepaths': filepaths,'token':token})
+
+from django.http import HttpResponse,HttpResponseBadRequest
+def descargar_archivos(request):
+    if request.method == 'POST':
+        archivos_seleccionados = request.POST.getlist('archivo')
+
+        if not archivos_seleccionados:
+            return HttpResponseBadRequest('No se seleccionó ningún archivo.')
+
+        if len(archivos_seleccionados) > 1:
+            return HttpResponseBadRequest('Solo se puede descargar un archivo a la vez.')
+
+        archivo_seleccionado = archivos_seleccionados[0]
+        nombre_archivo = os.path.basename(archivo_seleccionado)
+
+        with open(archivo_seleccionado, 'rb') as archivo:
+            response = HttpResponse(archivo.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+            return response
+
+    return HttpResponseBadRequest('Método de solicitud no válido.')

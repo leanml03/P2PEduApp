@@ -11,6 +11,7 @@
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
     <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
 
+    
 
 </head>
 <body>
@@ -52,7 +53,12 @@
         <div class="row justify-content-center" style="margin-left: 1rem;">
             <div class="col-md-6">
               <h1>Calificar Evaluación: {{ evaluacion.nombre }}</h1>
-
+              <form method="GET" action="{% url 'gestor_archivos' %}">
+                <input type="hidden" name="evaluacion" value="{{ evaluacion.nombre }}">    
+                <input name="token" value="{{token}}" hidden>
+                Archivos de Evaluacion
+                <button type="submit" class="btn btn-outline-success" style="background-color: #A0FE73; border-color: #A0FE73;">Ver Archivos</button>
+              </form>
               <table class="table">
                 <thead>
                   <tr>
@@ -66,9 +72,12 @@
                     <tr>
                       <td>{{ estudiante }}</td>
                       <td>{{ nota }}</td>
+                      
                       <td>
                         <form method="POST" action="{% url 'cal_eval_notas' %}">
                           {% csrf_token %}
+                          
+
                           <input type="hidden" name="estudiante" value="{{ estudiante }}">
                           <input type="hidden" name="evaluacion" value="{{ evaluacion.nombre }}">
                           <input type="number" name="nota" value="{{ nota }}" style="width: 3rem;">

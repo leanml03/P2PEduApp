@@ -69,18 +69,28 @@
                                     <input class="form-control" type="file" id="formFile" name="archivo">
                                 </div>
                             <span style="display:block;font-weight: bold;"> Detalles:  </span>
-                            <span style="display: block;">{{i.detalles}}. <span style="display:block;font-weight: bold;"> Nota Obtenida: </span> </span>
+                            <span style="display: block;">{{i.detalles}}.  </span>
                             
                             {% for estudiante, nota in i.calificaciones.items %}
                                 
-                            {% if usuario.name == estudiante %}
+                            {% if usuario.carne == estudiante %}
+                                <span style="font-weight: bolder;">Estado: </span>
+                                <span style="color: #57af2e; font-weight: bolder;">Respuesta Enviada</span>
+                                
+                                <span style="display:block;font-weight: bold;"> Nota Obtenida: </span>
+                                {%if nota == None%}
+                                <span style="display:block;">No calificado</span>
+                                {%else%}
                                 <span style="display:block;">{{nota}}</span>
+                                {%endif%}
+                                
                             {% endif %}
+                            
 
                             {%endfor%}
 
-                            <input name="token" value="{{token}}">
-                            <input name="user" value="{{usuario.carne}}">
+                            <input name="token" value="{{token}}" hidden>
+                            <input name="user" value="{{usuario.carne}}" hidden>
                             <input name="evaluacion" value="{{i.nombre}}" hidden>
                             
                             <button type="submit"  class="btn btn-outline-success" style="background-color: #A0FE73; border-color: #A0FE73; margin-top: 1rem;">Subir Respuesta</button>
