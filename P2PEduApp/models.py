@@ -63,4 +63,20 @@ def get_random_image():
     return img_path, img_name
 
 
-
+#Carga de los cursos
+def reg_to_course(carne, token):
+    ruta_datos = os.path.join(BASE_DIR, 'data/courses')
+    for archivo in os.listdir(ruta_datos):
+        if archivo.endswith('.json'):
+            ruta_archivo = os.path.join(ruta_datos, archivo)
+            with open(ruta_archivo, 'r+') as f:
+                curso = json.load(f)
+                if curso.get('token_curso') == token:
+                    miembros = curso.get('miembros', [])
+                    if carne not in miembros:
+                        miembros.append(carne)
+                        curso['miembros'] = miembros
+                        f.seek(0)  # Mover el puntero de lectura/escritura al inicio del archivo
+                        json.dump(curso, f, indent=4)  # Escribir el JSON modificado
+                        f.truncate()  # Truncar el archivo para eliminar el contenido restante
+                    break  # Terminar el bucle si se encuentra el archivo y se modifica

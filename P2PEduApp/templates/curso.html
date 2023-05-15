@@ -8,6 +8,8 @@
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 
 </head>
 <body>
@@ -31,21 +33,47 @@
       
         
       {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
+
       <a href="upload" target="_blank">Reportes</a>
       <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
-      <a href="cargar_archivo" target="_blank">Material</a>
       <a href="crear_foro" target="_blank">Crear Foro</a>
-      {% else %}
-      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
       <a href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
       <a href="{% url 'calificar_eval' %}?token={{ token }}">Calificar Evaluación</a>
+      {% else %}
+      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+      <a href="cargar_archivo" target="_blank">Material</a>
       {% endif %}
       <a href="{% url 'archivos_Cursos' %}?token={{ token }}">Archivos</a> 
 
-        <button class="boton">
-          Exportar
-        </button>
-        
+      <button type="button" class="boton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Exportar
+      </button>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg"> <!-- Agrega la clase "modal-lg" para hacer el modal más grande -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Token del Curso</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              El siguiente Token se puede utilizar para registrarse en el curso.<br> Ten cuidado con quien lo compartes. <br> <br>
+              <strong>{{token}}</strong>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Listo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+<!-- Button trigger modal -->
+
+
+
+
+
       </div>
   </div>
     <header>

@@ -19,10 +19,29 @@ def login(request):
 
 def home(request):
 	datos = load_courses()
-	user=load_profile
+	user=load_profile()
 	selected_image = request.COOKIES.get('selected_image')
 	nombre=request.POST.get('nombre')
+	if request.method == 'POST':
+		token = request.POST.get('token')
+		mensaje='No se ha encontrado ningun curso con el Token introducido.'
+		if(token==None):
+			print("nope")
+			mensaje='Se han sincronizado todos los cursos'
+			
+		for clave, valor in datos.items():
+			if valor['token_curso'] == token:
+				#miembros = valor['miembros']
+				reg_to_course(user['carne'],token)
+				print()
+				mensaje="Se te ha agregado al curso "+valor["nombre_curso"] 
+				break
+		
+		return render(request,'home.html',{'datos': datos,'user':user,'selected_image': selected_image, 'mensaje':mensaje})
+
 	return render(request,'home.html',{'datos': datos,'user':user,'selected_image': selected_image})
+
+
 
 
 
@@ -296,3 +315,5 @@ def descargar_archivos(request):
             return response
 
     return HttpResponseBadRequest('Método de solicitud no válido.')
+
+
