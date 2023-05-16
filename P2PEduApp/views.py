@@ -95,6 +95,7 @@ def registrar_curso(request):
 
 		with open(ruta_archivo, 'w') as archivo:
 			json.dump(datos_curso, archivo)
+		reg_to_course(votan,token)
 	return render(request, 'registrar_curso.html', {'token': token})
 
 def cargar_archivo(request):
