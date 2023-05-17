@@ -1,0 +1,30 @@
+<div class="respuesta">
+    <div class="indentation-line"></div>
+    <div class="response-box">
+        <div class="autor" style="color: black;">{{ respuesta.autor }}:</div>
+        <div class="texto" style="color: black;">{{ respuesta.mensaje }}</div>
+        <div class="opciones">
+            <button class="toggle-button btn btn-primary btn-custom" onclick="toggleResponseBox(this)">Responder</button>
+            <div class="response-box" style="display: none;">
+                <form action="{% url 'agregar_respuesta' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="autor_mensaje" value="{{ usuario.carne }}">
+                    <input type="hidden" name="foro_id" value="{{ foro.id }}">
+                    <input type="hidden" name="token" value="{{ token }}">
+                    <input type="hidden" name="mensaje_id" value="{{ respuesta.id }}">
+                    <textarea name="texto" class="response-input form-control" placeholder="Escribe tu respuesta aquí"></textarea>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if respuesta.respuestas %}
+        <div class="indentation-line"></div>
+        <div class="response-container">
+            {% for respuesta_hija in respuesta.respuestas %}
+                {% include "respuesta.html" with respuesta=respuesta_hija %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

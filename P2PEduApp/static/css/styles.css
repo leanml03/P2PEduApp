@@ -1,16 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Noto Sans');
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+
   }
-html{
-    font-size: 62.5%;
-}  
-body{
-    font-size: 16px;
-    font-family: 'Noto Sans';font-size: 16px;
-}
 
 .nav {
     height: 50px;
@@ -235,7 +226,6 @@ body{
       width: 28rem;
       height: 28rem;
       text-align: center;
-
       background-color: #dcdee2;
     }
 

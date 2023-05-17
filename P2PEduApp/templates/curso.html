@@ -8,44 +8,65 @@
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
 
 </head>
 <body>
-    <div class="nav">
-      <input type="checkbox" id="nav-check">
-      <div class="nav-header">
-        <div class="nav-title">
-          <img src="" alt="Logo">
-        </div>
-      </div>
-      <div class="nav-btn">
-        <label for="nav-check">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-      </div>
-      
-      <div class="nav-links">
-      
-      
-        
-      {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
-      <a href="upload" target="_blank">Reportes</a>
-      <a href="upload" target="_blank">Asignaciones</a>
-      <a href="cargar_archivo" target="_blank">Material</a>
-      <a href="crear_foro" target="_blank">Crear Foro</a>
-      {% else %}
-      <a href="upload" target="_blank">Calificaciones</a>
-      {% endif %}
-        
-
-        <button class="boton">
-          Exportar
-        </button>
-        
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+      <a class="navbar-brand" href="#">Votan</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#">Crear Curso</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link disabled">Disabled</a>
+              </li>
+          </ul>
+          <form class="d-flex" role="search">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                      <a class="nav-link">{{ user.carne }}
+                          <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button>
+                  </li>
+              </ul>
+          </form>
       </div>
   </div>
+</nav>
+      
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Token del Curso</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          El siguiente Token se puede utilizar para registrarse en el curso.<br> Ten cuidado con quien lo compartes. <br> <br>
+          <strong>{{ token }}</strong>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Listo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
     <header>
       <div class="text">
         {{ usuario.carne }}
@@ -53,37 +74,48 @@
     </div>
       <div id="carnet">{{user.name}}</div>
       <div id="carnet">{{user.carne}}</div>
-      <div id="carnet">Nombre del Curso: {{curso.nombre_curso}}</div>
-      {{curso.votan}}
+      <div id="carnet" style="font-size: 24px;">Nombre del Curso: {{curso.nombre_curso}}</div>
     </header>
+    {% if mensaje%}
+      <div class="alert alert-info">
+        {{ mensaje }}
+      </div>
+    {%endif%}
+
+
+
+    <div class="options-box">
+      {% if usuario.carne == curso.votan %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
+        <a href="upload" target="_blank" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Reportes</a>
+        <a href="{% url 'evaluaciones' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Asignaciones</a>
+        <a href="{% url 'crear_foro' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Crear Foro</a>
+        <a href="{% url 'crear_eval' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Crear Evaluación</a>
+        <a href="{% url 'calificar_eval' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Calificar Evaluación</a>
+      {% else %}
+        <a href="{% url 'evaluaciones' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Asignaciones</a>
+        <a href="cargar_archivo" target="_blank" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Material</a>
+      {% endif %}
+      <a href="{% url 'archivos_Cursos' %}?token={{ token }}" class="btn btn-primary" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">Archivos</a>
     
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background-color: #A0FE73; border-color: #A0FE73; color: black;">
+        Exportar
+      </button>
+    </div>
+
     <section>
-      <nav>
-        <a href="sync_data">Sincronizar</a>
-        <ul>
-          <li><a href="crear_foro">Crear Foro</a></li>
-          <li><a href="">Exportar Curso</a></li>
-        </ul>
-      </nav>
-      
-      <article>
-        <h2>foros Disponibles:</h2>
-        <div>
-          {% for clave, valor in datos.items %}
-          <section class="forum_select">
-            <div class="forum_box">
-              
-              <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="150" height="150" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
-                <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
-              </svg>
-              <span>{{ valor.name }}</span>
-            </div>
-          </section>  
+      <h2>Foros:</h2>
+      {% if foros %}
+        <ul class="list-group">
+          {% for foro in foros %}
+            <li class="list-group-item">
+              <a href="{% url 'foro' %}?token={{ token }}&id_foro={{ foro.id }}" class="text-decoration-none">{{ foro.titulo }}</a>
+            </li>
           {% endfor %}
-        </div>
-        <br></br>
+        </ul>
+      {% else %}
+        <p>No hay foros disponibles para este curso.</p>
+      {% endif %}
+    </section>
     
 
     </body>

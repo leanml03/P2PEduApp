@@ -6,60 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido</title>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+
+    
+
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
 </head>
 <body>
-
-        <div class="nav">
-            <input type="checkbox" id="nav-check">
-            <div class="nav-header">
-              <div class="nav-title">
-                <img src="" alt="Logo">
-              </div>
-            </div>
-            <div class="nav-btn">
-              <label for="nav-check">
-                <span></span>
-                <span></span>
-                <span></span>
-              </label>
-            </div>
-            
-            <div class="nav-links">
-             <div class="text">
-                <img src="" alt="Icon">
-             </div>
-              <a href="#" target="_blank">Registrarse</a>
-    
-              <button class="boton">
-                Importar Usuario
-              </button>
-              
-            </div>
-        </div>
-
-
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#";">Votan</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          
+        </ul>
+        <form class="d-flex" role="search">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Registrarse</a>
+            </li>
+            <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Importar Usuario</button></li>
+          </ul>
+          
+        </form>
+      </div>
+    </div>
+  </nav>
         <main>
             <section class="welcome_container">
                 <h1 style="color:#2D459B">Bienvenido a P2PEduApp</h1>
-                <img src="{% static 'images/' %}{{ image_name }}"alt="Icon" style="width: 100px;">
                 <span class="text">
                     {% if user.name %}
+                    <img src="{% static 'images/' %}{{ image_name }}"alt="Icon" style="width: 100px;">
                     {{ user.name }}
+
+                      <span class="text">
+                        {% if user.name %}
+                        {{ user.carne }}
+                        {% endif %}
+                    </span>
+                    <div>
+                      <form style="margin-right: 10;" action="{% url 'home'%}" method="post">
+                        <button type="submit" class="boton">
+                            {% csrf_token %}
+                            Ingresar
+                        </button>
+                    </form>
+                    </div>
+                    
+                    
+                    {%else%}
+                    <span>Registrate para poder hacer uso de todas las funcionalidades.</span>
+                    <form style="margin-right: 10;" action="{% url 'home'%}" method="post">
+                      <button type="submit" class="boton">
+                          {% csrf_token %}
+                          Registrarse
+                      </button>
+                  </form>
                     {% endif %}
                 </span>
-                <span class="text">
-                    {% if user.name %}
-                    {{ user.carne }}
-                    {% endif %}
-                </span>
-                <form style="margin-right: 10;" action="{% url 'home'%}" method="post">
-                    <button type="submit" class="boton">
-                        {% csrf_token %}
-                        Ingresar
-                    </button>
-                </form>
+
                 
                   
             </section>

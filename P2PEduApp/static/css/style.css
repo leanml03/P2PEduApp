@@ -1,0 +1,24 @@
+.courses{
+    display: flexbox;
+}
+.courses .course_box{
+    background-color: #A0FE73;
+    width: 10rem;
+    height: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #283b80;
+    font-weight: bold;
+    border: #8de465;
+}
+.course_box .content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.section_Token{
+    margin-top: 1rem;
+    display: inline-block;
+}

@@ -19,11 +19,23 @@ from P2PEduApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', welcome),
     path('welcome', welcome, name="welcome"),
     path('login', login, name="login"),
     path('home', home, name="home"),
     path('curso', curso, name="curso"),
     path('crear_curso',crear_curso,name="crear_curso"),
     path('registrar_curso',registrar_curso,name="registrar_curso"),
-    path('cargar_archivo', cargar_archivo, name='cargar_archivo')
+    path('cargar_archivo', cargar_archivo, name='cargar_archivo'),
+    path('crear_eval',crear_eval, name='crear_eval'),
+    path('calificar_eval',calificar_eval,name='calificar_eval'),
+    path('cal_eval_notas',cal_eval_notas,name='cal_eval_notas'),
+    path('evaluaciones',evaluaciones,name='evaluaciones'),
+    path('gestor_archivos',gestor_archivos,name='gestor_archivos'),
+    path('archivos_Cursos',archivos_Cursos,name='archivos_Cursos'),
+    path('descargar_archivos',descargar_archivos,name='descargar_archivos'),
+    path('foro', foro, name='foro'),
+    path('crear_foro', crear_foro, name='crear_foro'),
+    path('agregar_mensaje', agregar_mensaje, name='agregar_mensaje'),
+    path('agregar_respuesta', agregar_respuesta, name='agregar_respuesta')
 ]

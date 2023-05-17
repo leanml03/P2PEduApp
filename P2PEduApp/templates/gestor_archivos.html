@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Archivos</title>
+
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
+    
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#";">Votan</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="home">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Crear Curso</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link">{{ user.carne }}
+                  <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+                </a>
+                </li>
+                <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button></li>
+              </ul>
+
+            </form>
+          </div>
+        </div>
+      </nav>
+      <main>
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="home">Home</a></li>
+                  <li class="breadcrumb-item">{{token}}</li>
+                  <li class="breadcrumb-item active" aria-current="page"><a href="#" onclick="goBack()">{{evaluacion}}</a></li>
+                </ol>
+              </nav>
+
+              <div class="container">
+                <button onclick="openFileExplorer()">Abrir explorador de archivos</button>
+                <h1>Contenido de la carpeta</h1>
+    <ul>
+        {% for file in files %}
+        <td>{{ file }}</td>
+        {% endfor %}
+    </ul>
+              </div>
+          </div>
+          
+      </main>
+      
+    <script>
+        function openFileExplorer() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.click();
+}
+    </script>  
+    <script>
+        function goBack() {
+        window.history.back();
+        }
+    </script>
+</body>
+</html>
