@@ -4,46 +4,79 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso</title>
-    {% load static %}  
-    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
-    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
-</head>
-<body>
-    <header>
-      <div id="carnet">{{user.name}}</div>
-      <div id="carnet">{{user.carne}}</div>
-      <div id="carnet">{{nombre}}</div>
-    </header>
-    
-    <section>
-      <nav>
-        <a href="sync_data">Sincronizar</a>
-        <ul>
-          <li><a href="crear_foro">Crear Foro</a></li>
-          <li><a href="">Exportar Curso</a></li>
-        </ul>
-      </nav>
-      
-      <article>
-        <h2>foros Disponibles:</h2>
-        <div>
-          {% for clave, valor in datos.items %}
-          <section class="forum_select">
-            <div class="forum_box">
-              
-              <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="150" height="150" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
-                <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
-              </svg>
-              <span>{{ valor.name }}</span>
-            </div>
-          </section>  
-          {% endfor %}
-        </div>
-        <br></br>
-    
+    <title>Crear Foro</title>
+    {% load static %}      
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
 
-    </body>
-</html>
+</head>
+<style>
+.btn-custom {
+  background-color: #A0FE73;
+  color: black; /* Cambia el color del texto si lo deseas */
+}
+</style>
+
+<body>
+  <button class="toggle-button btn btn-primary btn-custom" onclick="history.back()">Devolverse</button>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#";">Votan</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Crear Curso</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link disabled">Disabled</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              {% csrf_token %}
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                  <a class="nav-link">{{ user.carne }}
+                    <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <button class="btn btn-outline-success btn-custom" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button>
+                </li>
+              </ul>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <main>
+        {% if mensaje%}
+        <div class="alert alert-success">
+          {{ mensaje }}
+        </div>
+        {% endif %}
+        <div class="row justify-content-center">
+          <div class="col-md-6" style="display: block; margin-left: 3rem;">
+            <h1>Crear Foro</h1>
+            <span>Se va a crear un foro para el siguiente curso</span>
+            <form action="{% url 'crear_foro'%}" method="post">
+              {% csrf_token %}
+              <input style="display: block;" id="token" name="token" value="{{token}}" hidden></input>
+              <span style="font-weight: bold; display: block;">Título del foro</span>
+              <input type="text" id="titulo_foro" name="titulo_foro">
+              <input type="hidden" name="creador_foro" value="{{ usuario.carne }}">
+              <span style="font-weight: bold; display: block;">Comentario</span>
+              <textarea type="text" style="height: 10rem; width: 30rem;" id="comentario" name="comentario"></textarea>
+              
+              <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;" >Crear Foro</button>
+              </form>
+              </div>
+              </div>
+              </main>
+              </body>
+              </html>

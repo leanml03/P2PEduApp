@@ -1,11 +1,11 @@
 {
-    "nombre_curso": "Geometria",
-    "grupo_curso": "50",
-    "carrera_curso": "Matematicas",
-    "miembros": [
-        "2017105539"
-    ],
-    "foros": [],
-    "token_curso": "6c397485a41a645e208cd550b8c47e30b632f85ecd7fb085c49bb8531a7d2196",
-    "votan": "2017105539"
+  "nombre_curso": "Geometria",
+  "grupo_curso": "50",
+  "carrera_curso": "Matematicas",
+  "miembros": [
+    "2017105539"
+  ],
+  "foros": [],
+  "token_curso": "6c397485a41a645e208cd550b8c47e30b632f85ecd7fb085c49bb8531a7d2196",
+  "votan": "2017105539"
 }

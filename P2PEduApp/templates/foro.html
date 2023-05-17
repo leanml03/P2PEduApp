@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Título de la página</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .btn-custom {
+        background-color: #A0FE73;
+        color: black; /* Cambia el color del texto si lo deseas */
+}
+        .mensaje {
+            font-size: 16px;
+            margin-left: 20px;
+        }
+
+        .respuesta {
+            margin-left: 40px;
+        }
+
+        .texto {
+            font-size: 18px;
+        }
+
+        #texto {
+            height: 80px;
+            width: 90%;
+        }
+
+        .indentation-line {
+            border-left: 2px solid gray;
+            margin-left: 20px;
+            padding-left: 20px;
+        }
+
+        .response-box {
+            border: 2px solid gray;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .response-arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid gray;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-button btn btn-primary btn-custom" onclick="history.back()">Devolverse</button>
+    <div class="container">
+        <h2>Título del foro</h2>
+        {% for mensaje in foro.mensajes %}
+        <div class="indentation-line"></div>
+        <div class="response-box">
+            <div class="mensaje nivel-{{ mensaje.nivel }}">
+                <div class="autor">{{ mensaje.autor }}:</div>
+                <div class="texto">{{ mensaje.mensaje }}</div>
+                <div class="opciones">
+                    <button class="toggle-button btn btn-primary btn-custom" onclick="toggleResponseBox(this)">Responder</button>
+                    <div class="response-box" style="display: none;">
+                        <form action="{% url 'agregar_respuesta'%}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="autor_mensaje" value="{{ usuario.carne }}">
+                            <input type="hidden" name="foro_id" value="{{ foro.id }}">
+                            <input type="hidden" name="token" value="{{ token }}">
+                            <input type="hidden" name="mensaje_id" value="{{ mensaje.id }}">
+                            <textarea name="texto" class="response-input form-control" placeholder="Escribe tu respuesta aquí"></textarea>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if mensaje.respuestas %}
+            <div class="indentation-line"></div>
+            <div class="response-container">
+                {% for respuesta in mensaje.respuestas %}
+                    {% include "respuesta.html" with respuesta=respuesta mensaje_id=mensaje.id %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endfor %}
+
+        <div style="margin-bottom: 100px;"></div>
+
+        <form action="{% url 'agregar_mensaje'%}" method="post" class="message-form">
+            {% csrf_token %}
+            <input type="hidden" name="foro_id" value="{{ foro.id }}">
+            <input type="hidden" name="token" value="{{ token }}">
+            <div class="form-group">
+                <label for="texto">Mensaje:</label>
+                <textarea name="texto" id="texto" class="form-control" placeholder="Escribe tu mensaje aquí" rows="2"></textarea>
+            </div>
+            <input type="hidden" name="autor_mensaje" value="{{ usuario.carne }}">
+            <button type="submit" class="btn btn-primary btn-custom">Agregar Mensaje</button>
+            </form>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+                
+            <script>
+            function toggleResponseBox(button) {
+            const responseBox = button.nextElementSibling;
+            responseBox.classList.toggle('opened');
+            responseBox.style.display = responseBox.style.display === 'none' ? 'block' : 'none';
+            const responseInput = responseBox.querySelector('.response-input');
+            responseInput.focus();
+            }
+
+        function updateFormAction(button) {
+        const mensajeId = button.closest('.mensaje').querySelector('.response-form input[name="mensaje_id"]').value;
+        const form = button.closest('.response-form');
+        const action = form.getAttribute('action');
+        const updatedAction = action + '?id_mensaje=' + mensajeId;
+        form.setAttribute('action', updatedAction);
+    }
+
+    function addResponseArrow() {
+        const respuestaContainers = document.querySelectorAll('.respuesta-container');
+        respuestaContainers.forEach((container) => {
+            const respuesta = container.querySelector('.respuesta');
+            const mensajeId = respuesta.dataset.mensajeId;
+            const mensaje = document.querySelector(`.mensaje[data-mensaje-id="${mensajeId}"]`);
+            const mensajeAutor = mensaje.querySelector('.autor').textContent;
+            const respuestaAutor = respuesta.querySelector('.autor').textContent;
+            const responseArrow = document.createElement('div');
+            responseArrow.classList.add('response-arrow');
+            respuesta.appendChild(responseArrow);
+
+            if (mensajeAutor !== respuestaAutor) {
+                const mensajeNivel = mensaje.classList[1].split('-')[1];
+                const respuestaNivel = respuesta.classList[1].split('-')[1];
+                if (mensajeNivel < respuestaNivel) {
+                    responseArrow.style.left = '30px';
+                } else {
+                    responseArrow.style.left = '60px';
+                }
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        addResponseArrow();
+    });
+</script>
+</body>
+</html>

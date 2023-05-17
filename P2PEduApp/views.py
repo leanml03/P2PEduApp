@@ -1,3 +1,4 @@
+import codecs
 import os
 import json
 import hashlib
@@ -48,7 +49,9 @@ def home(request):
 def curso(request): #Pagina de Curso
 	token=request.POST.get('token') #Se carga el token del curso que se le dio click con el button
 	datos = load_courses() #se obtienen los datos de todos los cursos
+	foros = load_forums(token)
 	usuario=load_profile # se carga el perfil de usuario actual conectado
+
 
 	for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
 		if(valor['token_curso'] == token):
@@ -56,7 +59,7 @@ def curso(request): #Pagina de Curso
 			print(valor)
 			curso=valor
 			break
-	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token}) #se manda el curso que hemos seleccionado
+	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token, 'foros':foros}) #se manda el curso que hemos seleccionado
 
 
 
@@ -318,3 +321,147 @@ def descargar_archivos(request):
     return HttpResponseBadRequest('Método de solicitud no válido.')
 
 
+def foro(request):
+    token = request.GET.get('token')
+    id_foro = request.GET.get('id_foro')
+    foros = load_forums(token)
+    foro = foros[int(id_foro)-1]
+    usuario = load_profile()
+    
+    return render(request,'foro.html',{"foro":foro, 'token':token, 'usuario':usuario}) #se manda el foro que hemos seleccionado
+
+def crear_foro(request):
+	usuario = load_profile()
+	token = request.GET.get('token')
+	if request.method == 'POST':
+		token = request.POST.get('token')
+		titulo_foro = request.POST.get('titulo_foro')
+		creador_foro = request.POST.get('creador_foro')
+		mensajes = []
+		respuestas = []
+		
+		primer_mensaje = {
+            "id": 1,
+            "autor": creador_foro, # Assign the author's username to the 'autor' fiel
+	        "mensaje": request.POST.get('comentario'),
+            "respuestas": respuestas
+        }
+		mensajes.append(primer_mensaje)
+		
+		datos_foro = {
+            "id": encontrar_foro_id(token),
+            "autor": creador_foro, # Assign the author's username to the 'autor' field
+            "titulo": titulo_foro,
+            "mensajes": mensajes
+        }
+
+	
+        # Escribir el archivo JSON en la lista de foros del curso
+		ruta_cursos = os.path.join(BASE_DIR, 'data', 'courses')
+		ruta_curso = os.path.join(ruta_cursos, token +'.json')
+		
+		with open(ruta_curso, 'r') as archivo_curso:
+			datos_curso = json.load(archivo_curso)
+			datos_curso['foros'].append(datos_foro)
+		with open(ruta_curso, 'w') as archivo_curso:
+			json.dump(datos_curso, archivo_curso, indent=4)
+			mensaje="La evaluacion se ha creado satisfactoriamente"
+
+		return render(request, 'crear_foro.html',{'mensaje':mensaje,'token':token, 'usuario':usuario})
+	else:
+		return render(request, 'crear_foro.html',{'token':token, 'usuario':usuario})
+	
+	
+def agregar_mensaje(request):
+	usuario = load_profile
+	if request.method == 'POST':
+		token_curso = request.POST.get('token')
+		id_foro = int(request.POST.get('foro_id'))
+		autor = request.POST.get('autor_mensaje')
+		contenido = request.POST.get('texto')
+
+		ruta_cursos = os.path.join(BASE_DIR, 'data', 'courses')
+		ruta_curso = os.path.join(ruta_cursos, token_curso + '.json')
+		with codecs.open(ruta_curso, 'r', encoding='utf-8') as f:
+			data = json.load(f)
+
+
+		foro = None
+		for f in data['foros']:
+			if int(f['id']) == id_foro:
+				foro = f
+				break
+		if foro is None:
+            # Foro no encontrado, manejar el error adecuadamente
+			return HttpResponse('Foro no encontrado')
+
+        # Obtener el último ID de todos los mensajes con todas sus respuestas correspondientes especificado por id_foro
+		last_msg_id = obtener_ultimo_id_mensajes(foro['mensajes'])
+
+        # Crear el nuevo mensaje
+		nuevo_mensaje = {
+            "id": last_msg_id + 1,
+            "autor": autor,
+            "mensaje": contenido,
+            "respuestas": []
+        }
+
+        # Agregar el nuevo mensaje al foro
+		foro['mensajes'].append(nuevo_mensaje)
+
+        # Escribir el archivo JSON actualizado
+		with codecs.open(ruta_curso, "w", encoding='utf-8') as f:
+			json.dump(data, f, indent=2)
+	
+	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
+
+
+def agregar_respuesta(request):
+	usuario = load_profile
+	if request.method == 'POST':
+		autor = request.POST.get('autor_mensaje')
+		contenido = request.POST.get('texto')
+		token_curso = request.POST.get('token')
+
+		id_foro = int(request.POST.get('foro_id'))
+		id_mensaje = int(request.POST.get('mensaje_id'))
+
+		ruta_cursos = os.path.join(BASE_DIR, 'data', 'courses')
+		ruta_curso = os.path.join(ruta_cursos, token_curso + '.json')
+
+		with codecs.open(ruta_curso, 'r', encoding='utf-8') as f:
+			data = json.load(f)
+		foro = None
+
+
+
+		for f in data['foros']:
+			if f['id'] == id_foro:
+				foro = f
+				break
+
+
+		if foro:
+			last_resp_id = obtener_ultimo_id_mensajes(foro['mensajes'])
+			nueva_respuesta = {
+                "id": last_resp_id + 1,
+                "autor": autor,
+                "mensaje": contenido,
+                "respuestas": []
+            }
+			mensaje = buscar_mensaje(foro['mensajes'], id_mensaje)
+
+			if mensaje:
+				mensaje['respuestas'].append(nueva_respuesta)
+			else:
+				raise ValueError(f"No se encontró ningún mensaje con el ID {id_mensaje}")
+
+            # Escribir el archivo JSON actualizado
+			with codecs.open(ruta_curso, "w", encoding='utf-8') as f:
+				json.dump(data, f, indent=2)
+		else:
+			raise ValueError(f"No se encontró ningún foro con el ID {id_foro}")
+	print('==========')	
+	print('id_mensaje:',id_mensaje)
+	print('==========')
+	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
