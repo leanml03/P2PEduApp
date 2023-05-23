@@ -49,20 +49,21 @@ def curso(request): #Pagina de Curso
 	token=request.POST.get('token') #Se carga el token del curso que se le dio click con el button
 	datos = load_courses() #se obtienen los datos de todos los cursos
 	usuario=load_profile # se carga el perfil de usuario actual conectado
-
+	selected_image = request.COOKIES.get('selected_image')
 	for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
 		if(valor['token_curso'] == token):
 			print(clave)
 			print(valor)
 			curso=valor
 			break
-	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token}) #se manda el curso que hemos seleccionado
+	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token,'selected_image': selected_image}) #se manda el curso que hemos seleccionado
 
 
 
 def crear_curso(request): #crea el curso
+	selected_image = request.COOKIES.get('selected_image')
 	user=load_profile #Carga el perfil para darle autoria de la creacion del curso
-	return render(request, 'crear_curso.html',{'user':user}) #Llama al html para crear el curso
+	return render(request, 'crear_curso.html',{'user':user,'selected_image': selected_image}) #Llama al html para crear el curso
 
 
 

@@ -13,39 +13,63 @@
 
 </head>
 <body>
-    <div class="nav">
-      <input type="checkbox" id="nav-check">
-      <div class="nav-header">
-        <div class="nav-title">
-          <img src="" alt="Logo">
-        </div>
-      </div>
-      <div class="nav-btn">
-        <label for="nav-check">
-          <span></span>
-          <span></span>
-          <span></span>
-        </label>
-      </div>
-      
-      <div class="nav-links">
-      
-      
-        
-      {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" >
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#";">Votan</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/home">Inicio</a>
+          </li>
+          {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
+          <li class="nav-item">
+            <a class="nav-link" href="upload" target="_blank">Reportes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="crear_foro" target="_blank">Crear Foro</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'calificar_eval' %}?token={{ token }}">Calificar Evaluación</a>
+          </li>
+          
+         
+         
+          
+          
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="cargar_archivo" target="_blank">Material</a>
+          </li>
+         
+          
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'archivos_Cursos' %}?token={{ token }}">Archivos</a> 
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <ul class="navbar-nav 1-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link">{{ usuario.carne }}
+              <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+            </a>
+            </li>
+          </ul>
+          
 
-      <a href="upload" target="_blank">Reportes</a>
-      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
-      <a href="crear_foro" target="_blank">Crear Foro</a>
-      <a href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
-      <a href="{% url 'calificar_eval' %}?token={{ token }}">Calificar Evaluación</a>
-      {% else %}
-      <a href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
-      <a href="cargar_archivo" target="_blank">Material</a>
-      {% endif %}
-      <a href="{% url 'archivos_Cursos' %}?token={{ token }}">Archivos</a> 
-
-      <button type="button" class="boton" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button"  class="btn btn-outline-success" style="background-color: #A0FE73; border-color: #A0FE73;"data-bs-toggle="modal" data-bs-target="#exampleModal">
         Exportar
       </button>
       
@@ -67,25 +91,29 @@
           </div>
         </div>
       </div>
-      
-<!-- Button trigger modal -->
-
-
-
-
-
+          
+        </form>
       </div>
-  </div>
+    </div>
+  </nav>  
+
+
     <header>
+
+      
+    </header>
+    
+    <div class="row justify-content-center" style="display:flexbox">
       <div class="text">
         {{ usuario.carne }}
         <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 2rem; ">
-    </div>
+      </div>
       <div id="carnet">{{user.name}}</div>
       <div id="carnet">{{user.carne}}</div>
       <div id="carnet">Nombre del Curso: {{curso.nombre_curso}}</div>
       {{curso.votan}}
-    </header>
+      
+    </div>
     {% if mensaje%}
       <div class="alert alert-info">
         {{ mensaje }}

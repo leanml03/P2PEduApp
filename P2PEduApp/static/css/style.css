@@ -1,8 +1,12 @@
 .courses{
     display: flexbox;
+    
+    
+    
 }
 .courses .course_box{
     background-color: #A0FE73;
+    margin-bottom: 0.5rem;
     width: 10rem;
     height: 10rem;
     overflow: hidden;
@@ -21,4 +25,8 @@
 .section_Token{
     margin-top: 1rem;
     display: inline-block;
+}
+.content{
+    display: block;
+    
 }
