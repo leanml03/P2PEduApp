@@ -80,3 +80,19 @@ def reg_to_course(carne, token):
                         json.dump(curso, f, indent=4)  # Escribir el JSON modificado
                         f.truncate()  # Truncar el archivo para eliminar el contenido restante
                     break  # Terminar el bucle si se encuentra el archivo y se modifica
+def check_votan(carne,cursoid):
+    datos = {}
+    ruta_datos = os.path.join(BASE_DIR, 'data/courses')
+    for archivo in os.listdir(ruta_datos):
+        if archivo.endswith('.json'):
+            with open(os.path.join(ruta_datos, archivo)) as f:
+                curso = json.load(f)
+                if curso.get('token_curso') == cursoid:
+                    datos=curso
+                    #print (datos)
+    if datos['votan']==carne:
+        return True
+    else:
+        return False
+    
+       

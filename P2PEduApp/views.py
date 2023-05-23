@@ -115,12 +115,12 @@ def crear_eval(request):
 	token = request.GET.get('token')
 	if request.method=='POST':
 		nombre_eval=request.POST.get('nombre_eval')
-		porcentaje=request.POST.get('range-value')
+		porcentaje=request.POST.get('porcent')
 		fecha=request.POST.get('fecha')
 		detalles=request.POST.get('detalles')
 		archivo=request.POST.get('archivo')
 		tokenCourse=request.POST.get('token')
-
+		print(porcentaje)
 		# Crear la carpeta de evaluaciones si no existe
 		evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', tokenCourse,'evaluaciones')
 		if not os.path.exists(evaluaciones_dir):
@@ -221,6 +221,7 @@ def cal_eval_notas(request):
 def evaluaciones(request):
 	#Se carga el usuario
 	usuario=load_profile
+	datos = load_courses() #se obtienen los datos de todos los cursos
 	#Se carga el token del curso
 	if not request.method=='POST': 
 		token = request.GET.get('token')
@@ -232,7 +233,13 @@ def evaluaciones(request):
 	#Se verifica si hay evaluaciones en el curso
 	if not os.path.exists(evaluaciones_dir):
 		# si no se encuentra el folder de evaluaciones, se muestra un mensaje de error
-		return render(request, 'curso.html', {'mensaje': 'El curso no tiene evaluaciones'})
+		for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
+			if(valor['token_curso'] == token):
+				print(clave)
+				print(valor)
+				curso=valor
+				break
+		return render(request, 'error.html', {'mensaje': 'El curso no tiene evaluaciones'})
 	#Se cargan todas las evaluaciones y se almacenan en el arreglo
 	evaluaciones = []
 	#Se recorre los archivos para verificar las evaluaciones y agregarlas al arreglo
@@ -287,6 +294,8 @@ def gestor_archivos(request):
 	return render(request,"gestor_archivos.html",{'token':token,'evaluacion':evaluacion})
 import glob
 def archivos_Cursos(request):
+	user=load_profile()
+	
 	token = request.GET.get('token')
 	print(token)
 	path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'files', '**', '*')
@@ -294,8 +303,11 @@ def archivos_Cursos(request):
 	filepaths = []
 	for filepath in glob.glob(path, recursive=True):
 		filepaths.append(filepath)
-
-	return render(request, "archivos_Cursos.html", {'filepaths': filepaths,'token':token})
+	filenames = [os.path.basename(filepath) for filepath in filepaths]  # Obtener solo el nombre del archivo	
+	if(check_votan(user['carne'],token)):
+		return render(request, "archivos_Cursos.html", {'filenames': filenames,'filepaths': filepaths,'token':token,'votan':user})
+	else:
+		return render(request, "archivos_Cursos.html", {'filenames': filenames,'filepaths': filepaths,'token':token})
 
 from django.http import HttpResponse,HttpResponseBadRequest
 def descargar_archivos(request):
@@ -318,4 +330,18 @@ def descargar_archivos(request):
 
     return HttpResponseBadRequest('Método de solicitud no válido.')
 
+def subir_archivos(request):
+	if request.method=='POST':
+			archivo=request.FILES.get('up_archivo')
+			token = request.POST.get('token')
+			filepaths = request.POST.get('filepaths')
+			curso_dir = os.path.join(BASE_DIR, 'data', 'courses', str(request.POST.get('token')),'files' )
+			os.makedirs(curso_dir, exist_ok=True) #Verifica si la carpeta ya se encuentra
+			with open(os.path.join(curso_dir, archivo.name), 'wb+') as destination:
+				for chunk in archivo.chunks():
+					destination.write(chunk)	
+			return render(request, "curso.html", {'mensaje': "Se ha subido el archivo a los archivos del curso. ","token":token})
+	return HttpResponseBadRequest('Método de solicitud no válido.')
 
+def error(request):
+	return render(request,'error.html')

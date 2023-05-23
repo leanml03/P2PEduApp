@@ -42,56 +42,6 @@
       </nav>
       <main>
         <div class="container">
-          {%if votan%}
-          <form method="POST" action="{% url 'subir_archivos' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-          <button class="btn btn-outline-success" type="submit" name="archivo" value="{{ filepath }}" style="background-color: #A0FE73; border-color: #A0FE73;">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
-              <path d="M7 9l5 -5l5 5" />
-              <path d="M12 4l0 12" />
-            </svg>
-          </button>
-          
-                <!-- Modal -->
-          <button type="button" class="boton" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Exportar
-          </button>
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg"> <!-- Agrega la clase "modal-lg" para hacer el modal más grande -->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Subir Archivo</h1>
-                  
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <input class="form-control" type="file" id="formFile" name="up_archivo">
-                  <input hidden name="token" value="{{token}}">
-                  <input hidden name="filepaths" value="{{filepaths}}">
-                </div>
-                <div class="modal-footer">
-                  <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-upload" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
-                      <path d="M7 9l5 -5l5 5" />
-                      <path d="M12 4l0 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-          
-          </form>
-          {%endif%}
             <table class="table caption-top">
                 
             <caption> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-folder" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -104,27 +54,15 @@
                   <th scope="col">Descarga</th>
                 </tr>
             </thead>
-
-            <form method="POST" action="{% url 'descargar_archivos' %}" >
-
-                
+            <form method="POST" action="{% url 'descargar_archivos' %}">
                 {% csrf_token %}
-                {% for filename in filenames %}
-                
-                  {% if forloop.counter0 == index %}
-                    {{ filename }}
-                  {% endif %}
+              
+                {% for filepath in filepaths %}
             
  
                         <tbody>
                           <tr>
-                            <td>{{ filename }}</td>
-
-
-                      
-               
-                {%endfor%}
-                {% for filepath in filepaths %}
+                            <td>{{ filepath }}</td>
                             <td><button class="btn btn-outline-success" type="submit" name="archivo" value="{{ filepath }}" style="background-color: #A0FE73; border-color: #A0FE73;"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#597e8d" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
@@ -132,7 +70,9 @@
                                 <line x1="12" y1="4" x2="12" y2="16" />
                               </svg></button></td>
                           </tr>
-                {%endfor%}
+
+                      
+                {% endfor %}
                 </tbody>
                 </table>
                 

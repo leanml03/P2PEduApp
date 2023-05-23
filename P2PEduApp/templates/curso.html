@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curso</title>
     {% load static %}  
-    <link rel="stylesheet" href="{% static 'css/styles.css'%}"/>
+
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
@@ -26,13 +27,13 @@
           </li>
           {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
           <li class="nav-item">
-            <a class="nav-link" href="upload" target="_blank">Reportes</a>
+            <a class="nav-link" href="#" target="_blank">Reportes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="crear_foro" target="_blank">Crear Foro</a>
+            <a class="nav-link" href="#" target="_blank">Crear Foro</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
@@ -49,14 +50,15 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="cargar_archivo" target="_blank">Material</a>
-          </li>
-         
+
           
           {% endif %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'archivos_Cursos' %}?token={{ token }}">Archivos</a> 
+            
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Foros</a> 
           </li>
         </ul>
         <form class="d-flex" role="search">
@@ -97,56 +99,47 @@
     </div>
   </nav>  
 
-
-    <header>
-
-      
-    </header>
-    
-    <div class="row justify-content-center" style="display:flexbox">
-      <div class="text">
-        {{ usuario.carne }}
-        <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 2rem; ">
-      </div>
-      <div id="carnet">{{user.name}}</div>
-      <div id="carnet">{{user.carne}}</div>
-      <div id="carnet">Nombre del Curso: {{curso.nombre_curso}}</div>
-      {{curso.votan}}
-      
-    </div>
-    {% if mensaje%}
-      <div class="alert alert-info">
-        {{ mensaje }}
-      </div>
-    {%endif%}
-    <section>
-      <nav>
-        <a href="sync_data">Sincronizar</a>
-        <ul>
-          <li><a href="crear_foro">Crear Foro</a></li>
-          <li><a href="">Exportar Curso</a></li>
-        </ul>
-      </nav>
-      
-      <article>
-        <h2>foros Disponibles:</h2>
-        <div>
-          {% for clave, valor in datos.items %}
-          <section class="forum_select">
-            <div class="forum_box">
-              
-              <svg style="padding:center;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-school" width="150" height="150" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2D459B" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
-                <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
-              </svg>
-              <span>{{ valor.name }}</span>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3">
+              <h3>{{curso.nombre_curso}}</h3>
+              <h5>Votan:</h5>
+              <section class="course-navigation">
+                  <div class="content">
+                    <span>{{curso.votan}}</span>
+                  </div>
+              </section>
+              <br>
+              <h5>Foros:</h5>
+              <section class="course-navigation">
+                <div class="content">
+                  <span>hola</span>
+                  <span>hola</span>
+                  <span>hola</span>
+                  <span>hola</span>
+                </div>
+            </section>
             </div>
-          </section>  
-          {% endfor %}
+            <div class="col-md-6">
+              <section >
+                <h4>Curso:</h4>
+                  <div class="info">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-certificate" width="100" height="100" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                      <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                      <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                      <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                      <path d="M6 9l12 0" />
+                      <path d="M6 12l3 0" />
+                      <path d="M6 15l2 0" />
+                    </svg><br><br>
+                    <h5>{{curso.nombre_curso}}</h5> <br>
+                    <span><strong>Grupo: </strong>{{curso.grupo_curso}}</span> <br>
+                    <span><strong>Carrera: </strong>{{curso.carrera_curso}}</span> <br>
+                  </div>
+              </section>
+            </div>
+          </div>
         </div>
-        <br></br>
-    
-
     </body>
 </html>
