@@ -44,22 +44,33 @@ def home(request):
 
 
 
-
+def sincronizar(request):
+	sincronizar_cursos()
+	return render(request,'sincronizar.html')
 
 def curso(request): #Pagina de Curso
 	token=request.POST.get('token') #Se carga el token del curso que se le dio click con el button
 	datos = load_courses() #se obtienen los datos de todos los cursos
 	foros = load_forums(token)
 	usuario=load_profile # se carga el perfil de usuario actual conectado
+<<<<<<< Updated upstream
 
 
+=======
+	foros = load_forums(token)
+	selected_image = request.COOKIES.get('selected_image')
+>>>>>>> Stashed changes
 	for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
 		if(valor['token_curso'] == token):
 			print(clave)
 			print(valor)
 			curso=valor
 			break
+<<<<<<< Updated upstream
 	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token, 'foros':foros}) #se manda el curso que hemos seleccionado
+=======
+	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token,'selected_image': selected_image, 'foros':foros}) #se manda el curso que hemos seleccionado
+>>>>>>> Stashed changes
 
 
 
@@ -321,6 +332,13 @@ def descargar_archivos(request):
     return HttpResponseBadRequest('Método de solicitud no válido.')
 
 
+<<<<<<< Updated upstream
+=======
+def error(request):
+	return render(request,'error.html')
+
+
+>>>>>>> Stashed changes
 def foro(request):
     token = request.GET.get('token')
     id_foro = request.GET.get('id_foro')
@@ -464,4 +482,9 @@ def agregar_respuesta(request):
 	print('==========')	
 	print('id_mensaje:',id_mensaje)
 	print('==========')
+<<<<<<< Updated upstream
 	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
+=======
+	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
+
+>>>>>>> Stashed changes

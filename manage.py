@@ -6,6 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    sys.path.append('btb_torrent')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'P2PEduApp.settings')
     try:
         from django.core.management import execute_from_command_line

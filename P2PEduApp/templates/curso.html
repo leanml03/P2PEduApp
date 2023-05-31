@@ -20,6 +20,7 @@
           <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+<<<<<<< Updated upstream
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="#">Inicio</a>
@@ -30,6 +31,56 @@
               <li class="nav-item">
                   <a class="nav-link disabled">Disabled</a>
               </li>
+=======
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/home">Inicio</a>
+          </li>
+          {% if usuario.carne == curso.votan  %} <! ––« Verificacion si el carne del usuario es el mismo del votan con esto se activan las funciones adicionales«––>
+          <li class="nav-item">
+            <a class="nav-link" href="#" target="_blank">Reportes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'crear_foro' %}?token={{ token }}" >Crear Foro</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'crear_eval' %}?token={{ token }}">Crear Evaluación</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'calificar_eval' %}?token={{ token }}">Calificar Evaluación</a>
+          </li>
+          
+         
+         
+          
+          
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'evaluaciones' %}?token={{ token }}">Asignaciones</a>
+          </li>
+
+          
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'archivos_Cursos' %}?token={{ token }}">Archivos</a> 
+            
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#"> </a> 
+          </li>
+        </ul>
+        
+        <form class="d-flex" role="search">
+          <ul class="navbar-nav 1-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link">{{ usuario.carne }}
+              <img class="img" src="{% static 'images/' %}{{ selected_image }}" alt="Imagen seleccionada" style="width: 1.5rem; ">
+            </a>
+            </li>
+>>>>>>> Stashed changes
           </ul>
           <form class="d-flex" role="search">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -118,5 +169,58 @@
     </section>
     
 
+<<<<<<< Updated upstream
+=======
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3">
+              <h3>{{curso.nombre_curso}}</h3>
+              <h5>Votan:</h5>
+              <section class="course-navigation">
+                  <div class="content">
+                    <span>{{curso.votan}}</span>
+                  </div>
+              </section>
+              <br>
+
+              <h5>Foros:</h5>
+      <section>
+        {% if foros %}
+          <ul class="list-group">
+            {% for foro in foros %}
+              <li class="list-group-item">
+                <a href="{% url 'foro' %}?token={{ token }}&id_foro={{ foro.id }}" class="text-decoration-none">{{ foro.titulo }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No hay foros disponibles para este curso.</p>
+        {% endif %}
+      </section>
+
+
+            </div>
+            <div class="col-md-6">
+              <section >
+                <h4>Curso:</h4>
+                  <div class="info">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-certificate" width="100" height="100" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                      <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                      <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                      <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                      <path d="M6 9l12 0" />
+                      <path d="M6 12l3 0" />
+                      <path d="M6 15l2 0" />
+                    </svg><br><br>
+                    <h5>{{curso.nombre_curso}}</h5> <br>
+                    <span><strong>Grupo: </strong>{{curso.grupo_curso}}</span> <br>
+                    <span><strong>Carrera: </strong>{{curso.carrera_curso}}</span> <br>
+                  </div>
+              </section>
+            </div>
+          </div>
+        </div>
+>>>>>>> Stashed changes
     </body>
 </html>

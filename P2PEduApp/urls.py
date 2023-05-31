@@ -34,8 +34,20 @@ urlpatterns = [
     path('gestor_archivos',gestor_archivos,name='gestor_archivos'),
     path('archivos_Cursos',archivos_Cursos,name='archivos_Cursos'),
     path('descargar_archivos',descargar_archivos,name='descargar_archivos'),
+<<<<<<< Updated upstream
     path('foro', foro, name='foro'),
     path('crear_foro', crear_foro, name='crear_foro'),
     path('agregar_mensaje', agregar_mensaje, name='agregar_mensaje'),
     path('agregar_respuesta', agregar_respuesta, name='agregar_respuesta')
+=======
+    path('subir_archivos',subir_archivos,name='subir_archivos'),
+    path('foro', foro, name='foro'),
+    path('crear_foro', crear_foro, name='crear_foro'),
+    path('agregar_mensaje', agregar_mensaje, name='agregar_mensaje'),
+    path('agregar_respuesta', agregar_respuesta, name='agregar_respuesta'),
+    path('sincronizar', sincronizar, name='sincronizar'),
+    path('error',error,name='error')
+
+
+>>>>>>> Stashed changes
 ]

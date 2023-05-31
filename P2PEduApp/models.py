@@ -1,8 +1,15 @@
 import os
 import json
 import shutil
+import time
+
+import py7zr
 from P2PEduApp.settings import BASE_DIR
 import random
+
+from btb_torrent.comuna import Comuna
+from btb_torrent.persona import Persona
+from btb_torrent.recurso import Recurso
 
 
 #Carga de los datos json
@@ -108,6 +115,38 @@ def encontrar_foro_id(token):
         foro_ids = [foro['id'] for foro in data['foros']]
         new_id = max(foro_ids) + 1
     else:
+<<<<<<< Updated upstream
+=======
+        return False
+    
+def load_forums(token_curso):
+    ruta_cursos = os.path.join(BASE_DIR, 'data', 'courses')
+    with open(ruta_cursos +'/{}.json'.format(token_curso), 'r') as f:
+        data = json.load(f)
+         
+    foros = []
+    for foro in data['foros']:
+        foro_json = {
+            'id': foro['id'],
+            'autor': foro['autor'],
+            'titulo': foro['titulo'],
+            'mensajes': foro['mensajes']
+        }
+        foros.append(foro_json)
+    return foros
+
+def encontrar_foro_id(token):
+    # Load course data from JSON file
+    ruta_cursos = os.path.join(BASE_DIR, 'data', 'courses')
+    with open(ruta_cursos +'/{}.json'.format(token), 'r') as f:
+        data = json.load(f)
+
+    if 'foros' in data and data['foros']:
+        # If there are forums and they are not empty, find the last forum ID and add 1
+        foro_ids = [foro['id'] for foro in data['foros']]
+        new_id = max(foro_ids) + 1
+    else:
+>>>>>>> Stashed changes
         # If there are no forums, start ID count at 1
         new_id = 1
 
@@ -137,4 +176,72 @@ def buscar_mensaje(mensajes, id_mensaje):
             respuesta_encontrada = buscar_mensaje(mensaje['respuestas'], id_mensaje)
             if respuesta_encontrada:
                 return respuesta_encontrada
+<<<<<<< Updated upstream
     return None
+=======
+    return None
+
+def sincronizar_cursos():
+    comuna = Comuna(7777)       
+    comuna_remota = Persona('127.0.0.1', 6666)      
+    comuna_remota.comuna = True
+
+    comuna.registrar_comuna(comuna_remota)
+    comuna.solicitar_personas()
+    
+    time.sleep(3)
+
+    for persona in comuna.comité_registro.personas_remotas:
+        if persona.comuna == True:
+            comuna.comité_registro.solicitar_recursos(persona)
+
+    time.sleep(2)
+
+    for persona_remota in comuna.comité_registro.personas_remotas:
+        if persona_remota.comuna == True:
+            for recurso in persona_remota.recursos:
+                comuna.comité_registro.solicitar_detalle_recurso(persona_remota, recurso.info_hash)
+
+    time.sleep(1)
+
+    recursos = comuna.listar_recursos_locales()
+    print(recursos)
+    recursos = comuna.listar_recursos_remotos()
+    print(recursos)
+
+    recurso = Recurso()
+
+    #hay que preguntar como se obtiene esta ruta en una pc diferente
+    recurso.cargar_archivo_meta_info('C:\\Users\\Luis\\Desktop\\biblioteca-bittorrent-master\\btb\\courses.rar.vttorrent') 
+
+    print('Traer este recurso', recurso.info_hash) 
+    comuna.gestionar_recurso_remoto(recurso)
+
+    print('#############')
+    recursos = comuna.listar_recursos_locales()
+    print(recursos)
+    print('$$$$$$$$$$$$$')
+    recursos = comuna.listar_recursos_remotos()
+    print(recursos)
+
+    extract_rar('courses.rar','data/')    
+    os.remove('courses.rar')
+
+
+
+
+def compress_folder(folder_path, rar_path):
+    # Crear un archivo RAR a partir de la carpeta
+    with py7zr.SevenZipFile(rar_path, 'w') as archive:
+        archive.writeall(folder_path, folder_path)
+
+    print(f'Carpeta comprimida en archivo RAR: {rar_path}')
+
+
+def extract_rar(rar_path, extract_path):
+    # Extraer el contenido del archivo RAR
+    with py7zr.SevenZipFile(rar_path, 'r') as archive:
+        archive.extractall(extract_path)
+
+    print(f'Archivo RAR descomprimido en: {extract_path}')
+>>>>>>> Stashed changes
