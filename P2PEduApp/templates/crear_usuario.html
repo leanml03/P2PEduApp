@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css'%}"/>
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'%}"/> 
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+          <section class="col-md-3" >
+            <form action="{% url 'crear_usuario' %}" method="post"><br>
+                {% csrf_token %}
+                <h3>Datos del Usuario:</h3>
+                <span>Ingresa los datos del usuario.</span><br><br>
+                <span><strong>Nombre:</strong></span><br>
+                <input name="nombre"><br>
+                <span><strong>Carne:</strong></span> <br>
+                <input name="carne"> <br><br>
+
+                <button type="submit"  class="btn btn-outline-success" style="background-color: #A0FE73; border-color: #A0FE73;">Crear</button>
+                
+                
+            </form>
+            
+        </section>
+        </div>
+    </div>
+</body>
+</html>

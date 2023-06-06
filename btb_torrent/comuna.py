@@ -1,8 +1,8 @@
-from comite import ComitéRecursos
-from comite import ComitéRegistro
-from persona import Persona
-from recurso import Recurso
-from conexión import Conexión
+from btb_torrent.comite import ComitéRecursos
+from btb_torrent.comite import ComitéRegistro
+from btb_torrent.persona import Persona
+from btb_torrent.recurso import Recurso
+from btb_torrent.conexión import Conexión
 
 from collections import OrderedDict
 

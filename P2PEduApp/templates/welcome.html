@@ -27,15 +27,41 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           
         </ul>
-        <form class="d-flex" role="search">
+        <form action="{% url 'descargar_usuario' %}" method="post">
+          {% csrf_token %}
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Registrarse</a>
-            </li>
-            <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Importar Usuario</button></li>
+
+            <li class="nav-item"><button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">Exportar Usuario</button></li>
           </ul>
           
         </form>
+        <!-- Botón para abrir el modal -->
+        <button type="button" class="btn btn-outline-success" style="margin-left: 0.5rem; background-color: #A0FE73; border-color: #A0FE73;" data-bs-toggle="modal" data-bs-target="#modalSubirArchivo">
+          Importar Usuario
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalSubirArchivo" tabindex="-1" aria-labelledby="modalSubirArchivoLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalSubirArchivoLabel">Importar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Formulario de subida de archivo -->
+                <form action="{% url 'importar_usuario' %}" id="formularioSubirArchivo" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="file" name="archivo" class="form-control-file">
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" form="formularioSubirArchivo" class="btn btn-primary">Importar Usuario</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -64,7 +90,7 @@
                     
                     {%else%}
                     <span>Registrate para poder hacer uso de todas las funcionalidades.</span>
-                    <form style="margin-right: 10;" action="{% url 'home'%}" method="post">
+                    <form style="margin-right: 10;" action="{% url 'crear_usuario'%}" method="get">
                       <button type="submit" class="boton">
                           {% csrf_token %}
                           Registrarse
@@ -79,6 +105,6 @@
 
 
         </main>
-
+        
 </body>
 </html>

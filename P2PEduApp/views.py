@@ -51,32 +51,23 @@ def sincronizar(request):
 def curso(request): #Pagina de Curso
 	token=request.POST.get('token') #Se carga el token del curso que se le dio click con el button
 	datos = load_courses() #se obtienen los datos de todos los cursos
-	foros = load_forums(token)
 	usuario=load_profile # se carga el perfil de usuario actual conectado
-<<<<<<< Updated upstream
-
-
-=======
 	foros = load_forums(token)
 	selected_image = request.COOKIES.get('selected_image')
->>>>>>> Stashed changes
 	for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
 		if(valor['token_curso'] == token):
 			print(clave)
 			print(valor)
 			curso=valor
 			break
-<<<<<<< Updated upstream
-	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token, 'foros':foros}) #se manda el curso que hemos seleccionado
-=======
 	return render(request,'curso.html',{"curso":curso, "usuario":usuario, "token":token,'selected_image': selected_image, 'foros':foros}) #se manda el curso que hemos seleccionado
->>>>>>> Stashed changes
 
 
 
 def crear_curso(request): #crea el curso
+	selected_image = request.COOKIES.get('selected_image')
 	user=load_profile #Carga el perfil para darle autoria de la creacion del curso
-	return render(request, 'crear_curso.html',{'user':user}) #Llama al html para crear el curso
+	return render(request, 'crear_curso.html',{'user':user,'selected_image': selected_image}) #Llama al html para crear el curso
 
 
 
@@ -113,6 +104,7 @@ def registrar_curso(request):
 	return render(request, 'registrar_curso.html', {'token': token})
 
 def cargar_archivo(request):
+	
 	if request.method == 'POST' and request.FILES['archivo']:
 		archivo = request.FILES['archivo']
 		# Aquí es donde guardarías el archivo en el directorio que quieras
@@ -128,12 +120,12 @@ def crear_eval(request):
 	token = request.GET.get('token')
 	if request.method=='POST':
 		nombre_eval=request.POST.get('nombre_eval')
-		porcentaje=request.POST.get('range-value')
+		porcentaje=request.POST.get('porcent')
 		fecha=request.POST.get('fecha')
 		detalles=request.POST.get('detalles')
 		archivo=request.POST.get('archivo')
 		tokenCourse=request.POST.get('token')
-
+		print(porcentaje)
 		# Crear la carpeta de evaluaciones si no existe
 		evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', tokenCourse,'evaluaciones')
 		if not os.path.exists(evaluaciones_dir):
@@ -164,24 +156,28 @@ def crear_eval(request):
 		return render(request, 'crear_eval.html',{'token':token})
 
 def calificar_eval(request):
-	token = request.GET.get('token')
-	# Obtener la lista de evaluaciones
+	try:
+		token = request.GET.get('token')
+		# Obtener la lista de evaluaciones
 
-	datos = load_courses() # Se obtienen los datos de todos los cursos
-	usuario=load_profile # Se carga el perfil de usuario actual conectado
+		datos = load_courses() # Se obtienen los datos de todos los cursos
+		usuario=load_profile # Se carga el perfil de usuario actual conectado
 
-	for clave, valor in datos.items(): # Se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
-		if valor['token_curso'] == token:
-			curso=valor
-			break
+		for clave, valor in datos.items(): # Se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
+			if valor['token_curso'] == token:
+				curso=valor
+				break
 
-	evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', token, 'evaluaciones')
-	evaluaciones = []
-	for filename in os.listdir(evaluaciones_dir):
-		if filename.endswith('.json'):
-			with open(os.path.join(evaluaciones_dir, filename)) as f:
-				evaluacion = json.load(f)
-				evaluaciones.append(evaluacion)
+		evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', token, 'evaluaciones')
+		evaluaciones = []
+		for filename in os.listdir(evaluaciones_dir):
+			if filename.endswith('.json'):
+				with open(os.path.join(evaluaciones_dir, filename)) as f:
+					evaluacion = json.load(f)
+					evaluaciones.append(evaluacion)
+	except:
+		mensaje="Error: No se encontraron asignaciones"
+		return render(request,'alert.html',{'mensaje':mensaje})
 
 	return render(request, 'calificar_eval.html', {"curso":curso, "token":token, "evaluaciones":evaluaciones})
 def cal_eval_notas(request):
@@ -233,63 +229,74 @@ def cal_eval_notas(request):
 			return render(request,'cal_eval_notas.html',{"evaluacion":evaluacion,"token":token})
 def evaluaciones(request):
 	#Se carga el usuario
-	usuario=load_profile
-	#Se carga el token del curso
-	if not request.method=='POST': 
-		token = request.GET.get('token')
-	else:
-		token=request.POST.get('token')
-	
-	#Se obtiene la direccion de la ubicacion de las evaluaciones
-	evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
-	#Se verifica si hay evaluaciones en el curso
-	if not os.path.exists(evaluaciones_dir):
-		# si no se encuentra el folder de evaluaciones, se muestra un mensaje de error
-		return render(request, 'curso.html', {'mensaje': 'El curso no tiene evaluaciones'})
-	#Se cargan todas las evaluaciones y se almacenan en el arreglo
-	evaluaciones = []
-	#Se recorre los archivos para verificar las evaluaciones y agregarlas al arreglo
-	for filename in os.listdir(evaluaciones_dir):
-		if filename.endswith('.json'):
-			with open(os.path.join(evaluaciones_dir, filename)) as f:
-				evaluacion = json.load(f)
-				evaluaciones.append(evaluacion)
-
-
-	#Si el metodo es post se hace el registro del archivo subido
-	if request.method == 'POST':
-		try:
-			archivo = request.FILES['archivo']
-			archivoUploaded=True
-		except:
-			mensaje="No se ha seleccionado ningun archivo para subir a la evaluacion"
-			archivoUploaded=False
+	try:
+		usuario=load_profile
+		datos = load_courses() #se obtienen los datos de todos los cursos
+		#Se carga el token del curso
+		if not request.method=='POST': 
+			token = request.GET.get('token')
+		else:
+			token=request.POST.get('token')
 		
-		evaluacion_name = request.POST.get('evaluacion') 
-		userCarne=request.POST.get('user')
-		#Esta es la ubicacion de la carpeta de archivos de la evaluacion
-		evaluacion_path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones', evaluacion_name , 'files',userCarne)
-		os.makedirs(evaluacion_path, exist_ok=True) #Verifica si la carpeta ya se encuentra
-		if(archivoUploaded):
-			with open(os.path.join(evaluacion_path, archivo.name), 'wb+') as destination:
-				for chunk in archivo.chunks():
-					destination.write(chunk)	
-			#Ahora se abre el archivo JSON para modificar su interior
-			for filename in os.listdir(evaluaciones_dir):
-				if filename.endswith('.json') and filename==evaluacion_name+".json":
-					with open(os.path.join(evaluaciones_dir, filename)) as f:
-						eval = json.load(f)
-			registro_entrega={userCarne:None}
-			eval['calificaciones'].update(registro_entrega)
+		#Se obtiene la direccion de la ubicacion de las evaluaciones
+		evaluaciones_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones')
+		#Se verifica si hay evaluaciones en el curso
+		if not os.path.exists(evaluaciones_dir):
+			# si no se encuentra el folder de evaluaciones, se muestra un mensaje de error
+			for clave, valor in datos.items(): # se recorren todos los cursos para obtener el que cumpla con la condicion de tener el mismo token que el que seleccionamos
+				if(valor['token_curso'] == token):
+					print(clave)
+					print(valor)
+					curso=valor
+					break
+			return render(request, 'error.html', {'mensaje': 'El curso no tiene evaluaciones'})
+		#Se cargan todas las evaluaciones y se almacenan en el arreglo
+		evaluaciones = []
+		#Se recorre los archivos para verificar las evaluaciones y agregarlas al arreglo
+		for filename in os.listdir(evaluaciones_dir):
+			if filename.endswith('.json'):
+				with open(os.path.join(evaluaciones_dir, filename)) as f:
+					evaluacion = json.load(f)
+					evaluaciones.append(evaluacion)
+
+
+		#Si el metodo es post se hace el registro del archivo subido
+		if request.method == 'POST':
+			try:
+				archivo = request.FILES['archivo']
+				archivoUploaded=True
+			except:
+				mensaje="No se ha seleccionado ningun archivo para subir a la evaluacion"
+				archivoUploaded=False
 			
-			evaluacion_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name+'.json')
-			with open(evaluacion_dir, 'w') as f:
-				json.dump(eval, f)
-			mensaje="Se ha subido el archivo a la evaluacion. "
-		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token,'mensaje':mensaje})
-	else:
-		
-		return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token})
+			evaluacion_name = request.POST.get('evaluacion') 
+			userCarne=request.POST.get('user')
+			#Esta es la ubicacion de la carpeta de archivos de la evaluacion
+			evaluacion_path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones', evaluacion_name , 'files',userCarne)
+			os.makedirs(evaluacion_path, exist_ok=True) #Verifica si la carpeta ya se encuentra
+			if(archivoUploaded):
+				with open(os.path.join(evaluacion_path, archivo.name), 'wb+') as destination:
+					for chunk in archivo.chunks():
+						destination.write(chunk)	
+				#Ahora se abre el archivo JSON para modificar su interior
+				for filename in os.listdir(evaluaciones_dir):
+					if filename.endswith('.json') and filename==evaluacion_name+".json":
+						with open(os.path.join(evaluaciones_dir, filename)) as f:
+							eval = json.load(f)
+				registro_entrega={userCarne:None}
+				eval['calificaciones'].update(registro_entrega)
+				
+				evaluacion_dir = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'evaluaciones',evaluacion_name+'.json')
+				with open(evaluacion_dir, 'w') as f:
+					json.dump(eval, f)
+				mensaje="Se ha subido el archivo a la evaluacion. "
+			return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token,'mensaje':mensaje})
+		else:
+			
+			return render(request,'evaluaciones.html',{'evaluaciones':evaluaciones,'usuario':usuario,'token':token})
+	except:
+		mensaje="Error: No se encontraron asignaciones"
+		return render(request,'alert.html',{'mensaje':mensaje})
 def gestor_archivos(request):
 	token = request.GET.get('token')
 	evaluacion_name = request.GET.get('evaluacion')
@@ -300,6 +307,8 @@ def gestor_archivos(request):
 	return render(request,"gestor_archivos.html",{'token':token,'evaluacion':evaluacion})
 import glob
 def archivos_Cursos(request):
+	user=load_profile()
+	selected_image = request.COOKIES.get('selected_image')
 	token = request.GET.get('token')
 	print(token)
 	path = os.path.join(BASE_DIR, 'data', 'courses', str(token), 'files', '**', '*')
@@ -307,8 +316,11 @@ def archivos_Cursos(request):
 	filepaths = []
 	for filepath in glob.glob(path, recursive=True):
 		filepaths.append(filepath)
-
-	return render(request, "archivos_Cursos.html", {'filepaths': filepaths,'token':token})
+	filenames = [os.path.basename(filepath) for filepath in filepaths]  # Obtener solo el nombre del archivo	
+	if(check_votan(user['carne'],token)):
+		return render(request, "archivos_Cursos.html", {'filenames': filenames,'filepaths': filepaths,'token':token,'votan':user})
+	else:
+		return render(request, "archivos_Cursos.html", {'filenames': filenames,'filepaths': filepaths,'token':token})
 
 from django.http import HttpResponse,HttpResponseBadRequest
 def descargar_archivos(request):
@@ -331,14 +343,23 @@ def descargar_archivos(request):
 
     return HttpResponseBadRequest('Método de solicitud no válido.')
 
+def subir_archivos(request):
+	if request.method=='POST':
+			archivo=request.FILES.get('up_archivo')
+			token = request.POST.get('token')
+			filepaths = request.POST.get('filepaths')
+			curso_dir = os.path.join(BASE_DIR, 'data', 'courses', str(request.POST.get('token')),'files' )
+			os.makedirs(curso_dir, exist_ok=True) #Verifica si la carpeta ya se encuentra
+			with open(os.path.join(curso_dir, archivo.name), 'wb+') as destination:
+				for chunk in archivo.chunks():
+					destination.write(chunk)	
+			return render(request, "curso.html", {'mensaje': "Se ha subido el archivo a los archivos del curso. ","token":token})
+	return HttpResponseBadRequest('Método de solicitud no válido.')
 
-<<<<<<< Updated upstream
-=======
 def error(request):
 	return render(request,'error.html')
 
 
->>>>>>> Stashed changes
 def foro(request):
     token = request.GET.get('token')
     id_foro = request.GET.get('id_foro')
@@ -482,9 +503,111 @@ def agregar_respuesta(request):
 	print('==========')	
 	print('id_mensaje:',id_mensaje)
 	print('==========')
-<<<<<<< Updated upstream
 	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
-=======
-	return render(request,'foro.html',{"foro":foro, 'token':token_curso, 'usuario':usuario})
+def votaciones(request):
+	try:
+		if request.method=='GET':
+			usuario=load_profile
+			token_curso = request.GET.get('token')
+			poll_folder = os.path.join(BASE_DIR,'data','courses',token_curso, 'poll')
+			votaciones=get_json_files(poll_folder)
+			return render(request,'votaciones.html',{'usuario':usuario,'token':token_curso,'votaciones':votaciones})
+		else:
+			usuario=load_profile()
+			votacion_name= request.POST.get('votacion_name')
+			votacion_token= request.POST.get('votacion_token')
+			votacion_type= request.POST.get('votacion_type')
+			print(votacion_token)
+			print(votacion_type)
+			respuesta = request.POST['respuesta']
+			votar(votacion_name,votacion_token,votacion_type,respuesta,usuario)
+			mensaje="Has votado satisfactoriamente."
+			return render(request,'alert.html',{'mensaje':mensaje})
+	except:
+		mensaje="Error: No se encontraron votaciones"
+		return render(request,'alert.html',{'mensaje':mensaje})
 
->>>>>>> Stashed changes
+
+def crear_votacion(request):
+	if request.method == 'GET':
+		token_curso = request.GET.get('token')
+		return render(request,'crear_votacion.html',{'token':token_curso})
+	else:
+		token_curso = request.POST.get('token')
+		nombre_encuesta = request.POST.get('nombre_encuesta')
+		pregunta = request.POST.get('question')
+		if(nombre_encuesta!=None):
+			mensaje="La encuesta se ha creado satisfactoriamente."
+			create_poll(nombre_encuesta,pregunta,token_curso)
+			return render(request,'alert.html',{'mensaje':mensaje})
+	
+def crear_votacion_mult(request):
+	if request.method == 'GET':
+		token_curso = request.GET.get('token')
+		return render(request,'crear_votacion_mult.html',{'token':token_curso})
+	else:
+		token_curso = request.POST.get('token')
+		print("el token del curso es el siguiente",token_curso)
+		nombre_encuesta = request.POST.get('nombre_encuesta')
+		print("nombre de la encuesta ", nombre_encuesta)
+		print("dsadas",nombre_encuesta)
+		pregunta = request.POST.get('question')
+		respuesta1 = request.POST.get('answer01')
+		respuesta2 = request.POST.get('answer02')
+		respuesta3 = request.POST.get('answer03')
+		respuesta4 = request.POST.get('answer04')
+		respuesta5 = request.POST.get('answer05')
+		opciones=[respuesta1,respuesta2,respuesta3,respuesta4,respuesta5]
+		print("pregunta ", pregunta)
+		if(nombre_encuesta!=None):
+			mensaje="La encuesta se ha creado satisfactoriamente."
+			create_poll_mult(nombre_encuesta,pregunta,token_curso,opciones)
+			return render(request,'alert.html',{'mensaje':mensaje})
+
+		
+
+def crear_usuario(request):
+	if request.method == 'POST':
+		nombre = request.POST.get('nombre')
+		carne = request.POST.get('carne')
+		create_user(nombre,carne)
+		mensaje="Se ha creado el usuario correctamente."
+		return render(request,'alert.html',{'mensaje':mensaje})
+	else:
+		return render(request,'crear_usuario.html')
+	
+def descargar_usuario(request):
+    file_path = os.path.join(BASE_DIR, 'data', 'user.json')
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/json')
+            response['Content-Disposition'] = 'attachment; filename="user.json"'
+            return response
+    else:
+        return HttpResponse('El archivo no existe')
+	
+def importar_usuario(request):
+    if request.method == 'POST' and request.FILES['archivo']:
+        archivo = request.FILES['archivo']
+        # Obtener la ruta de destino
+        ruta_destino = os.path.join(BASE_DIR, 'data', archivo.name)
+        
+        # Guardar el archivo en la ruta de destino
+        with open(ruta_destino, 'wb') as destino:
+            for chunk in archivo.chunks():
+                destino.write(chunk)
+        
+        return render(request, 'alert.html',{'mensaje':"Has importado el usuario satisfactoriamente"})
+    
+    return render(request, 'alert.html',{'mensaje':"Has importado el usuario satisfactoriamente"})
+
+
+def mostrar_resultados(request):
+	type = request.POST.get('votacion_type')
+	nombre = request.POST.get('votacion_name')
+	lista_resultados = request.POST.get('votacion_lista_resultados')
+	yes = request.POST.get('votacion_yes')
+	no = request.POST.get('votacion_no')
+	print(type,nombre,lista_resultados,yes,no)
+	resultados=[]
+	return render(request,'mostrar_resultados.html',{"resultados":resultados})

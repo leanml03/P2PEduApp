@@ -1,5 +1,5 @@
 from bitstring import BitArray
-from recurso import Recurso
+from btb_torrent.recurso import Recurso
 
 class Persona: 
 

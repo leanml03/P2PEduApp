@@ -1,8 +1,12 @@
 .courses{
     display: flexbox;
+    
+    
+    
 }
 .courses .course_box{
     background-color: #A0FE73;
+    margin-bottom: 0.5rem;
     width: 10rem;
     height: 10rem;
     overflow: hidden;
@@ -21,4 +25,45 @@
 .section_Token{
     margin-top: 1rem;
     display: inline-block;
+}
+.content{
+    display: block;
+    
+}
+
+.course-navigation{
+    background-color: #d7e8fa;
+    width: 10rem;
+    border-radius: 0.2rem;
+
+}
+
+.course-navigation .content{
+    margin-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+
+}
+.course-navigation .info{
+    margin-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.error_container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flexbox;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 0.2rem;
+    width: 20rem;
 }

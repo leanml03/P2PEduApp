@@ -1,4 +1,4 @@
-from persona import Persona
+from btb_torrent.persona import Persona
 
 import socket
 import threading

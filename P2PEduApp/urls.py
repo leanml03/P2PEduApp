@@ -34,20 +34,20 @@ urlpatterns = [
     path('gestor_archivos',gestor_archivos,name='gestor_archivos'),
     path('archivos_Cursos',archivos_Cursos,name='archivos_Cursos'),
     path('descargar_archivos',descargar_archivos,name='descargar_archivos'),
-<<<<<<< Updated upstream
-    path('foro', foro, name='foro'),
-    path('crear_foro', crear_foro, name='crear_foro'),
-    path('agregar_mensaje', agregar_mensaje, name='agregar_mensaje'),
-    path('agregar_respuesta', agregar_respuesta, name='agregar_respuesta')
-=======
     path('subir_archivos',subir_archivos,name='subir_archivos'),
     path('foro', foro, name='foro'),
     path('crear_foro', crear_foro, name='crear_foro'),
     path('agregar_mensaje', agregar_mensaje, name='agregar_mensaje'),
     path('agregar_respuesta', agregar_respuesta, name='agregar_respuesta'),
     path('sincronizar', sincronizar, name='sincronizar'),
-    path('error',error,name='error')
+    path('error',error,name='error'),
+    path('crear_votacion',crear_votacion,name='crear_votacion'),
+    path('crear_votacion_mult',crear_votacion_mult,name='crear_votacion_mult'),
+    path('votaciones',votaciones,name='votaciones'),
+    path('crear_usuario',crear_usuario,name='crear_usuario'),
+    path('descargar_usuario',descargar_usuario,name='descargar_usuario'),
+    path('importar_usuario',importar_usuario,name='importar_usuario'),
+    path('mostrar_resultados',mostrar_resultados,name='mostrar_resultados')
 
 
->>>>>>> Stashed changes
 ]

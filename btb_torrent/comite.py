@@ -3,9 +3,9 @@ from hashlib import sha1
 from collections import OrderedDict
 from socket import inet_aton, inet_ntoa
 
-from persona     import Persona
-from conexión    import Conexión
-from recurso     import Recurso
+from btb_torrent.persona     import Persona
+from btb_torrent.conexión    import Conexión
+from btb_torrent.recurso     import Recurso
 
 import os
 import copy

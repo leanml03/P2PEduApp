@@ -27,11 +27,10 @@
             <a class="nav-link active" aria-current="page" href="#">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Crear Curso</a>
+            <a class="nav-link" href="/crear_curso">Crear Curso</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link disabled">Disabled</a>
-          </li>
+          
+          
         </ul>
         <form action="{% url 'sincronizar'%}" method="post" class="d-flex" role="search">
           {% csrf_token %}
@@ -63,12 +62,6 @@
                 <h1 style="font-size: larger;">Cursos Matriculados</h1>
                 <ul>
                   
-                  <form action="{% url 'home'%}" method="post">
-                    <button class="btn btn-outline-success" type="submit" style="background-color: #A0FE73; border-color: #A0FE73;">
-                        {% csrf_token %}
-                        Sincronizar Cursos
-                    </button>
-                  </form>
                 </ul>
                 
               </div>

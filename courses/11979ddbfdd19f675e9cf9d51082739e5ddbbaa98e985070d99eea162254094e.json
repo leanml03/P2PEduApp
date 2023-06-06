@@ -1,0 +1,25 @@
+{
+    "nombre_curso": "Proyectos",
+    "grupo_curso": "50",
+    "carrera_curso": "Computaci\u00f3n",
+    "miembros": [
+        "2017105539"
+    ],
+    "foros": [
+        {
+            "id": 1,
+            "autor": "2017105539",
+            "titulo": "ProyectoForo",
+            "mensajes": [
+                {
+                    "id": 1,
+                    "autor": "2017105539",
+                    "mensaje": "Hola a todos",
+                    "respuestas": []
+                }
+            ]
+        }
+    ],
+    "token_curso": "11979ddbfdd19f675e9cf9d51082739e5ddbbaa98e985070d99eea162254094e",
+    "votan": "2017105539"
+}

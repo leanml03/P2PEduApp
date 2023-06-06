@@ -53,7 +53,7 @@
         {%endif%}
         <div class="row justify-content-center">
           <div class="col-md-6" style="display: block; margin-left: 3rem;">
-            <h1>Crear Evaluacíon</h1>
+            <h1>Crear Evaluacion</h1>
             <span>Se va a crear una evaluacion para el siguiente curso</span>
             <form action="{% url 'crear_eval'%}" method="post">
               {% csrf_token %}
@@ -64,7 +64,7 @@
               <span id="range-value" name="range-value"></span>
               <label for="customRange3" class="form-label">%</label>
                
-              <input style="width: 20rem;" type="range" class="form-range" min="0" max="100" step="1" id="customRange3" >
+              <input name="porcent" style="width: 20rem;" type="range" class="form-range" min="0" max="100" step="1" id="customRange3" >
              
               <script>
                 const range = document.querySelector('#customRange3');
@@ -74,7 +74,6 @@
                   rangeValue.textContent = range.value;
                 });
               </script>
-              
               <span style="font-weight: bold; display: block;">Fecha de entrega</span>
               <label for="fecha">Fecha:</label>
               <input style="width: 10rem;" type="date" id="fecha" name="fecha" class="form-control">

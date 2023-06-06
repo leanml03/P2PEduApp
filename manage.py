@@ -3,11 +3,14 @@
 import os
 import sys
 
+from P2PEduApp.models import iniciarlizar_comite_registro
+
 
 def main():
     """Run administrative tasks."""
     sys.path.append('btb_torrent')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'P2PEduApp.settings')
+    iniciarlizar_comite_registro()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
